@@ -50,13 +50,44 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/includes"
+					"path" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes"
 				}
 			],
 			"language" : "C",
 			"sourceIndexes" : 
 			[
 				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1"
+				},
+				{
+					"fragment" : "-std=gnu++17"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 2,
+					"path" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				2
 			]
 		}
 	],
@@ -74,14 +105,16 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				2
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1
+				1,
+				3
 			]
 		}
 	],
@@ -96,6 +129,17 @@
 		{
 			"backtrace" : 1,
 			"path" : "includes/KHR/khrplatform.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Shader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Shader.h",
 			"sourceGroupIndex" : 1
 		}
 	],

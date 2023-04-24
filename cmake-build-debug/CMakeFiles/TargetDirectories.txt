@@ -1,4 +1,4 @@
-/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug/CMakeFiles/opengl_project.dir
-/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug/CMakeFiles/GLAD.dir
+/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug/CMakeFiles/opengl_project.dir
+/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug/CMakeFiles/GLAD.dir

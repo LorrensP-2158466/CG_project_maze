@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug"
+			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -139,10 +139,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "CXX compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "STRING",
+			"type" : "UNINITIALIZED",
 			"value" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
 		},
 		{
@@ -515,7 +515,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL"
+			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1099,7 +1099,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/includes][v()]"
+			"value" : "[/opt/homebrew/include][v()]"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenGL",
@@ -1147,7 +1147,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/includes"
+			"value" : "/opt/homebrew/include"
 		},
 		{
 			"name" : "OPENGL_INCLUDE_DIR",
@@ -1207,7 +1207,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/cmake-build-debug"
+			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug"
 		},
 		{
 			"name" : "opengl_project_IS_TOP_LEVEL",
@@ -1231,7 +1231,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL"
+			"value" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze"
 		}
 	],
 	"kind" : "cache",
