@@ -15,12 +15,12 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    JUMP,
 };
 
-
-
-// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
+// Camera class from learnOpenGL book by Joey de vries, THANKS!
+// But modified to fit our needs to also represent a person;
 class Camera
 {
 public:
@@ -30,12 +30,20 @@ public:
     glm::vec3 _up;
     glm::vec3 _right;
     glm::vec3 _world_up;
+
     // euler Angles
     float Yaw = -80.f;
     float Pitch = 0.0f;
     // camera options
-    float MovementSpeed = 0.1;
+    float MovementSpeed = 3.5F;
     float _mouse_sens = 0.1f;
+
+    // player attributes;
+    bool _is_jumping = false;
+    bool _is_falling = false;
+    const float GRAV = 9.8f;
+    const float max_jump_height = 0.5f;
+    float velocity_y = 0.f;
     // float MouseSensitivity;
 
     // constructor with vectors
@@ -49,6 +57,34 @@ public:
         updateCameraVectors();
     }
 
+    void update(float delta_t){
+        // yeah this is broken as fuck
+        auto cur_y = _pos.y;
+        if (_is_jumping && _pos.y <= max_jump_height){
+            std::cout << "in jump\n";
+            velocity_y += GRAV *delta_t;
+            cur_y += velocity_y * delta_t;
+            _pos.y = cur_y;
+            if (_pos.y > max_jump_height) {
+                _is_jumping = false;
+                _is_falling = true;
+            }
+        }
+        // falling
+        if (_is_falling && _pos.y > 0.f){
+            std::cout << "in fall\n";
+            velocity_y -= GRAV * delta_t;
+            cur_y -= velocity_y * delta_t;
+            _pos.y = cur_y;
+            if (cur_y < 0.f){
+                _is_falling = false;
+                _pos.y = 0;
+                velocity_y = 0;
+            }
+        }
+
+    };
+
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     [[nodiscard]] glm::mat4 GetViewMatrix() const
     {
@@ -56,9 +92,9 @@ public:
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction)
+    void ProcessKeyboard(Camera_Movement direction, float delta_t)
     {
-        float velocity = MovementSpeed;
+        float velocity = MovementSpeed * delta_t;
         if (direction == FORWARD)
             _pos += _front * velocity;
         if (direction == BACKWARD)
@@ -67,7 +103,11 @@ public:
             _pos -= _right * velocity;
         if (direction == RIGHT)
             _pos += _right * velocity;
-        _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
+        if (direction == JUMP){
+            _is_jumping = true;
+        }
+        if (!_is_jumping && !_is_falling)
+            _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -105,7 +145,6 @@ private:
         // also re-calculate the Right and Up vector
         _right = glm::normalize(glm::cross(_front, _world_up));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         _up    = glm::normalize(glm::cross(_right, _front));
-        std::cout << _front.x << " " << _front.y << " " << _front.z << std::endl;
     }
 };
 #endif

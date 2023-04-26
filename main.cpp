@@ -31,13 +31,16 @@ void processInput(GLFWwindow *window, MazeGame& maze)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(FORWARD);
+        maze._camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(BACKWARD);
+        maze._camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(LEFT);
+        maze._camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(RIGHT);
+        maze._camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
+    }
 }
 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn){
@@ -117,6 +120,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         processInput(window, maze);
+        maze.update(deltaTime);
         maze.Draw();
 
         glfwSwapBuffers(window);

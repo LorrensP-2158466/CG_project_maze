@@ -70,12 +70,12 @@ public:
     }
 
     void Draw() {
-        update();
         wall.draw_many(_wall_offsets.size());
     }
 
-    void update() {
+    void update(float delta_t) {
         // we update the view matrix to the UBO
+        _camera.update(delta_t);
         auto view = _camera.GetViewMatrix();
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
