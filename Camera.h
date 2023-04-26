@@ -41,8 +41,8 @@ public:
     // player attributes;
     bool _is_jumping = false;
     bool _is_falling = false;
-    const float GRAV = 9.8f;
-    const float max_jump_height = 0.5f;
+    const float GRAV = 5.f;
+    const float max_jump_height = 1.f;
     float velocity_y = 0.f;
     // float MouseSensitivity;
 
@@ -62,7 +62,7 @@ public:
         auto cur_y = _pos.y;
         if (_is_jumping && _pos.y <= max_jump_height){
             std::cout << "in jump\n";
-            velocity_y += GRAV *delta_t;
+            velocity_y -= GRAV * delta_t;
             cur_y += velocity_y * delta_t;
             _pos.y = cur_y;
             if (_pos.y > max_jump_height) {
@@ -103,8 +103,9 @@ public:
             _pos -= _right * velocity;
         if (direction == RIGHT)
             _pos += _right * velocity;
-        if (direction == JUMP){
+        if (direction == JUMP && !_is_falling && !_is_jumping){
             _is_jumping = true;
+            velocity_y = 8.f;
         }
         if (!_is_jumping && !_is_falling)
             _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
