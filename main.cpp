@@ -39,7 +39,7 @@ void processInput(GLFWwindow *window, MazeGame& maze)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         maze._camera.ProcessKeyboard(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
+        //maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
     }
 }
 
