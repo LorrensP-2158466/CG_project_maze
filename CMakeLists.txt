@@ -17,7 +17,7 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
 set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 
-add_library(GLAD "glad.c" includes/KHR/khrplatform.h ShaderBuilder.cpp ShaderBuilder.h)
+add_library(GLAD "glad.c" includes/KHR/khrplatform.h ShaderProgram.h MazeWall.cpp MazeWall.h Maze.cpp Maze.h Vertex.cpp Vertex.h)
 set(LIBS ${LIBS} GLAD)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)

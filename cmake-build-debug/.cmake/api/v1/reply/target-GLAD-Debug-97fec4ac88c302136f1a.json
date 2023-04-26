@@ -87,7 +87,9 @@
 			},
 			"sourceIndexes" : 
 			[
-				2
+				3,
+				5,
+				7
 			]
 		}
 	],
@@ -106,7 +108,9 @@
 			"sourceIndexes" : 
 			[
 				0,
-				2
+				3,
+				5,
+				7
 			]
 		},
 		{
@@ -114,7 +118,10 @@
 			"sourceIndexes" : 
 			[
 				1,
-				3
+				2,
+				4,
+				6,
+				8
 			]
 		}
 	],
@@ -133,13 +140,40 @@
 		},
 		{
 			"backtrace" : 1,
+			"path" : "ShaderProgram.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
 			"compileGroupIndex" : 1,
-			"path" : "Shader.cpp",
+			"path" : "MazeWall.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "Shader.h",
+			"path" : "MazeWall.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Maze.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Maze.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Vertex.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Vertex.h",
 			"sourceGroupIndex" : 1
 		}
 	],
