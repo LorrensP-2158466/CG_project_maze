@@ -9,6 +9,9 @@
 #include <iostream>
 #include "ShaderProgram.h"
 
+#include "Vertex.h"
+#include "Maze.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
@@ -65,47 +68,10 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    ShaderProgram ourShader("../shader.vert", "../shader.frag");
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
+    ShaderProgram ourShader("../wall.vert", "../wall.frag");
 
 
-
-
-    std::vector<glm::vec3> offsets {};
-
-    for (int i = 0; i < perspective_distance /4 ; i += 2){
-        offsets.emplace_back(i, 0, -1);
-        offsets.emplace_back(i, 0, 1);
-    }
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    unsigned int instanceVBO;
-    glGenBuffers(1, &instanceVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, offsets.size() * sizeof(glm::vec3) , &offsets[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertex), &vertices[0], GL_STATIC_DRAW);
-
-
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 *sizeof(float)));
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribDivisor(2, 1);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
+    auto maze = Maze();
     ourShader.use();
 
     auto projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, perspective_distance);
@@ -133,19 +99,24 @@ int main()
         ourShader.setMat4("view", view);
 
 
+        maze.Draw();
+
         // render box
+        /*
         glBindVertexArray(VAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, offsets.size());
-
+        */
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    /*
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-
+    glDeleteBuffers(1, &instanceVBO);
+*/
     glfwTerminate();
     return 0;
 }
@@ -157,13 +128,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)){
         view_pos_x += 0.1;
     }
-    if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    else if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)){
         view_pos_x -= 0.1f;
     }
-    if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    else if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)){
         view_pos_y += 0.1;
     }
-    if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+    else  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)){
         view_pos_y -= 0.1f;
     }
 

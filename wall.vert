@@ -16,6 +16,6 @@ vec3 random (vec3 st) {
 void main()
 {
     gl_Position = projection * view * model * vec4(pos + offset, 1.f);
-    colour = random(offset);
+    colour = col;
 
 }
