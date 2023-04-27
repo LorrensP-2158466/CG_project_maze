@@ -9,7 +9,7 @@
 					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
-						"string" : "3.2"
+						"string" : "3.21"
 					},
 					"projectIndex" : 0,
 					"source" : ".",
@@ -41,7 +41,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "GLAD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-GLAD-Debug-c0f39db34eb5a419ddc3.json",
+					"jsonFile" : "target-GLAD-Debug-fdda75c69329c6d6160b.json",
 					"name" : "GLAD",
 					"projectIndex" : 0
 				},

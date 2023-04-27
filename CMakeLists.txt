@@ -15,9 +15,9 @@ message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
-set(LIBS glfw3 opengl32)
+set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 
-add_library(GLAD "glad.c")
+add_library(GLAD "glad.c" includes/KHR/khrplatform.h ShaderProgram.h MazeWall.cpp MazeWall.h MazeGame.cpp MazeGame.h Vertex.h Camera.cpp Camera.h)
 set(LIBS ${LIBS} GLAD)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)

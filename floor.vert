@@ -5,8 +5,11 @@ layout (location = 1) in vec3 col;
 out vec3 colour; // output a color to the fragment shader
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+layout (std140) uniform PV_mats
+{
+    mat4 projection;
+    mat4 view;
+};
 
 
 void main()
