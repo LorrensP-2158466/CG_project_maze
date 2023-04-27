@@ -1,31 +1,69 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
 
 
 #include <iostream>
 #include "ShaderProgram.h"
 
 #include "Vertex.h"
-#include "Maze.h"
+#include "MazeGame.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
-const float sqrt_2 = 1.41421356237f;
-const auto perspective_distance = 100.F;
+bool firstMouse = true;
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
 
-auto view_pos_x = -3.f;
-auto view_pos_y = 0.0f;
 
 //luckily c compilers guarantee allignement and ordering of struct fields
+
+void processInput(GLFWwindow *window, MazeGame& maze)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        maze._camera.ProcessKeyboard(FORWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        maze._camera.ProcessKeyboard(BACKWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        maze._camera.ProcessKeyboard(LEFT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        maze._camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        //maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
+    }
+}
+
+void mouse_callback(GLFWwindow *window, double xposIn, double yposIn){
+    auto xpos = static_cast<float>(xposIn);
+    auto ypos = static_cast<float>(yposIn);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    // explained in main
+    auto game = static_cast<MazeGame*>(glfwGetWindowUserPointer(window));
+    game->_camera.ProcessMouseMovement(xoffset, yoffset);
+}
 
 
 int main()
@@ -51,7 +89,9 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    //glfwSetKeyCallback(window, key_callback);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
     // glad: load all OpenGL function pointers
@@ -66,78 +106,28 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile our shader zprogram
-    // ------------------------------------
-    ShaderProgram ourShader("../wall.vert", "../wall.frag");
-
-
-    auto maze = Maze();
-    ourShader.use();
-
-    auto projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, perspective_distance);
-    ourShader.setMat4("projection", projection);
+    auto maze = MazeGame();
+    // context of the window is the game, only way to acces the game in callbacks...
+    glfwSetWindowUserPointer(window, &maze);
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // render
-        // ------
+        auto currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
-
-
-        // activate shader
-        ourShader.use();
-
-        // create transformations
-        glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        glm::mat4 view          = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0, 0, -1.F)); // move
-        model = glm::rotate(model, glm::radians(90.f), glm::normalize(glm::vec3(0.f, 1.F, 0.f))); // rotate
-        view  = glm::translate(view, glm::vec3(view_pos_y, 0, view_pos_x));
-        ourShader.setMat4("model", model);
-        ourShader.setMat4("view", view);
-
-
+        processInput(window, maze);
+        maze.update(deltaTime);
         maze.Draw();
 
-        // render box
-        /*
-        glBindVertexArray(VAO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, offsets.size());
-        */
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    /*
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &instanceVBO);
-*/
     glfwTerminate();
     return 0;
-}
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-
-    if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-        view_pos_x += 0.1;
-    }
-    else if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-        view_pos_x -= 0.1f;
-    }
-    else if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-        view_pos_y += 0.1;
-    }
-    else  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-        view_pos_y -= 0.1f;
-    }
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
