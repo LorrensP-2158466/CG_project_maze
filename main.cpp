@@ -11,6 +11,7 @@
 
 #include "Vertex.h"
 #include "Maze.h"
+#include "Floor.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -19,7 +20,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const float sqrt_2 = 1.41421356237f;
 const auto perspective_distance = 100.F;
 
 auto view_pos_x = -3.f;
@@ -68,18 +68,27 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    ShaderProgram ourShader("../wall.vert", "../wall.frag");
+    ShaderProgram wallShader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.frag");
+    ShaderProgram floorShader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\floor.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\floor.frag");
 
 
     auto maze = Maze();
-    ourShader.use();
+    auto floor = Floor();
+    wallShader.use();
 
     auto projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, perspective_distance);
-    ourShader.setMat4("projection", projection);
+    wallShader.setMat4("projection", projection);
+
+    floorShader.use();
+    floorShader.setMat4("projection", projection);
+
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(view_pos_y, 0, view_pos_x));
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -87,16 +96,27 @@ int main()
 
 
         // activate shader
-        ourShader.use();
+        floorShader.use();
+
+        // create transformations
+        glm::mat4 floorModel = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        floorModel = glm::translate(floorModel, glm::vec3(0, 0, -10.F)); // move
+        floorModel = glm::scale(floorModel, glm::vec3(10, 1, 10));
+        wallShader.setMat4("model", floorModel);
+        wallShader.setMat4("view", view);
+
+
+        floor.Draw();
+
+        // activate shader
+        wallShader.use();
 
         // create transformations
         glm::mat4 model         = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        glm::mat4 view          = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0, 0, -1.F)); // move
         model = glm::rotate(model, glm::radians(90.f), glm::normalize(glm::vec3(0.f, 1.F, 0.f))); // rotate
-        view  = glm::translate(view, glm::vec3(view_pos_y, 0, view_pos_x));
-        ourShader.setMat4("model", model);
-        ourShader.setMat4("view", view);
+        wallShader.setMat4("model", model);
+        wallShader.setMat4("view", view);
 
 
         maze.Draw();
