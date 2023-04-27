@@ -13,6 +13,7 @@
 #include <iostream>
 #include "MazeWall.h"
 #include "Camera.h"
+#include "Floor.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,100.0f);
 
@@ -22,7 +23,10 @@ public:
         glDeleteBuffers(1, &_instance_vbo);
         glfwTerminate();
     }
-    MazeGame() : wall{MazeWall()}, _camera(){
+    MazeGame()
+        : wall{MazeWall()}
+        , floor(Floor())
+        , _camera(){
         for (int i = 0; i < 100 /4 ; i += 2){
             _wall_offsets.emplace_back(-2, 0, i);
             _wall_offsets.emplace_back(2, 0, i);
@@ -71,6 +75,7 @@ public:
 
     void Draw() {
         wall.draw_many(_wall_offsets.size());
+        floor.Draw();
     }
 
     void update(float delta_t) {
@@ -89,6 +94,7 @@ private:
     GLuint _instance_vbo;
     GLuint _ubo_mv_mats;
     MazeWall wall;
+    Floor floor;
 };
 
 

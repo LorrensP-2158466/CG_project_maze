@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.21)
 project(opengl_project)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -21,5 +21,5 @@ add_library(GLAD "glad.c" includes/KHR/khrplatform.h ShaderProgram.h MazeWall.cp
 set(LIBS ${LIBS} GLAD)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)
-add_executable(opengl_project main.cpp stb_image.h)
+add_executable(opengl_project main.cpp stb_image.h main.cpp)
 target_link_libraries(opengl_project ${LIBS})

@@ -105,7 +105,6 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-
     auto maze = MazeGame();
     // context of the window is the game, only way to acces the game in callbacks...
     glfwSetWindowUserPointer(window, &maze);
