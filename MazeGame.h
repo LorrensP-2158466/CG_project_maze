@@ -11,7 +11,7 @@
 #include "glm/vec3.hpp"
 #include <vector>
 #include <iostream>
-#include "MazeWall.h"
+#include "MazeWalls.h"
 #include "Camera.h"
 #include "Floor.h"
 #include "Skybox.h"
@@ -21,23 +21,12 @@ const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.
 class MazeGame {
 public:
     ~MazeGame(){
-        glDeleteBuffers(1, &_instance_vbo);
         glfwTerminate();
     }
     MazeGame()
-        : wall{MazeWall()}
-        , floor(Floor())
-        , skybox(Skybox())
-        , _camera(){
-        for (int i = 0; i < 100 /4 ; i += 2){
-            _wall_offsets.emplace_back(-2, 0, i);
-            _wall_offsets.emplace_back(2, 0, i);
-        }
-        wall.init();
-        init_instance_vbo();
-        bind_instances_to_wallvao();
+        : _camera(){
         init_ubo_mats();
-        skybox.setCubemapTexture(skybox.loadCubemap());
+        //skybox.setCubemapTexture(skybox.loadCubemap());
     }
 
     // Init Uniform Buffer Object and set projection
@@ -54,30 +43,12 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-    void init_instance_vbo(){
-        // VBO of instances
-        glBindVertexArray(wall._vao);
-        glGenBuffers(1, &_instance_vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, _instance_vbo);
-        glBufferData(GL_ARRAY_BUFFER, _wall_offsets.size() * sizeof(glm::vec3) , _wall_offsets.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
 
-    }
-
-    void bind_instances_to_wallvao() const  {
-        glBindVertexArray(wall._vao);
-        glBindBuffer(GL_ARRAY_BUFFER, _instance_vbo);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glVertexAttribDivisor(2, 1);
-        glEnableVertexAttribArray(2);
-        glBindVertexArray(0);
-    }
 
     void Draw() {
-        wall.draw_many(_wall_offsets.size());
+        //drawSkybox();
         floor.Draw();
+        walls.draw();
     }
 
     void drawSkybox() {
@@ -85,8 +56,7 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-        skybox.Draw();
+        //skybox.Draw();
     }
 
     void update(float delta_t) {
@@ -100,13 +70,10 @@ public:
 
     Camera _camera;
 private:
-
-    std::vector<glm::vec3> _wall_offsets {};
-    GLuint _instance_vbo;
     GLuint _ubo_mv_mats;
-    MazeWall wall;
+    MazeWalls walls;
     Floor floor;
-    Skybox skybox;
+   // Skybox skybox;
 };
 
 

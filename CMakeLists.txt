@@ -15,8 +15,14 @@ message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 find_package(GLFW3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 
-set(LIBS glfw3 opengl32)
+if (MSVC)
+    set(LIBS glfw3)
 
+endif(MSVC)
+if (APPLE)
+    add_compile_definitions(ROOT_DEF_="../")
+    set(LIBS glfw3 "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+endif(APPLE)
 add_library(GLAD "glad.c")
 set(LIBS ${LIBS} GLAD)
 

@@ -73,6 +73,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 build cmake_object_order_depends_target_opengl_project: phony || cmake_object_order_depends_target_GLAD
 
 build CMakeFiles/opengl_project.dir/main.cpp.o: CXX_COMPILER__opengl_project_Debug /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/main.cpp || cmake_object_order_depends_target_opengl_project
+  DEFINES = -DROOT_DEF_=\"../\"
   DEP_FILE = CMakeFiles/opengl_project.dir/main.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1 -std=gnu++17
   INCLUDES = -I/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes
@@ -107,29 +108,9 @@ build opengl_project: CXX_EXECUTABLE_LINKER__opengl_project_Debug CMakeFiles/ope
 build cmake_object_order_depends_target_GLAD: phony || CMakeFiles/GLAD.dir
 
 build CMakeFiles/GLAD.dir/glad.c.o: C_COMPILER__GLAD_Debug /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/glad.c || cmake_object_order_depends_target_GLAD
+  DEFINES = -DROOT_DEF_=\"../\"
   DEP_FILE = CMakeFiles/GLAD.dir/glad.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1
-  INCLUDES = -I/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes
-  OBJECT_DIR = CMakeFiles/GLAD.dir
-  OBJECT_FILE_DIR = CMakeFiles/GLAD.dir
-
-build CMakeFiles/GLAD.dir/MazeWall.cpp.o: CXX_COMPILER__GLAD_Debug /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/MazeWall.cpp || cmake_object_order_depends_target_GLAD
-  DEP_FILE = CMakeFiles/GLAD.dir/MazeWall.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1 -std=gnu++17
-  INCLUDES = -I/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes
-  OBJECT_DIR = CMakeFiles/GLAD.dir
-  OBJECT_FILE_DIR = CMakeFiles/GLAD.dir
-
-build CMakeFiles/GLAD.dir/MazeGame.cpp.o: CXX_COMPILER__GLAD_Debug /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/MazeGame.cpp || cmake_object_order_depends_target_GLAD
-  DEP_FILE = CMakeFiles/GLAD.dir/MazeGame.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1 -std=gnu++17
-  INCLUDES = -I/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes
-  OBJECT_DIR = CMakeFiles/GLAD.dir
-  OBJECT_FILE_DIR = CMakeFiles/GLAD.dir
-
-build CMakeFiles/GLAD.dir/Camera.cpp.o: CXX_COMPILER__GLAD_Debug /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/Camera.cpp || cmake_object_order_depends_target_GLAD
-  DEP_FILE = CMakeFiles/GLAD.dir/Camera.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1 -std=gnu++17
   INCLUDES = -I/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes
   OBJECT_DIR = CMakeFiles/GLAD.dir
   OBJECT_FILE_DIR = CMakeFiles/GLAD.dir
@@ -142,7 +123,7 @@ build CMakeFiles/GLAD.dir/Camera.cpp.o: CXX_COMPILER__GLAD_Debug /Users/lorrens/
 #############################################
 # Link the static library libGLAD.a
 
-build libGLAD.a: CXX_STATIC_LIBRARY_LINKER__GLAD_Debug CMakeFiles/GLAD.dir/glad.c.o CMakeFiles/GLAD.dir/MazeWall.cpp.o CMakeFiles/GLAD.dir/MazeGame.cpp.o CMakeFiles/GLAD.dir/Camera.cpp.o
+build libGLAD.a: C_STATIC_LIBRARY_LINKER__GLAD_Debug CMakeFiles/GLAD.dir/glad.c.o
   ARCH_FLAGS = -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -mmacosx-version-min=13.1
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles/GLAD.dir

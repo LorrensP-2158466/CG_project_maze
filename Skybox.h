@@ -28,7 +28,7 @@ public:
     }
 
     Skybox()
-        : skybox_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.frag")
+        : skybox_shader("../skybox.vert", "../skybox.frag")
     {
         vertices = {
             // positions          
@@ -147,12 +147,12 @@ public:
 
     std::vector<std::string> faces =
     {
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\right.jpg",
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\left.jpg",
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\top.jpg",
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\bottom.jpg",
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\front.jpg",
-        "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex\\back.jpg"
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/right.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/left.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/top.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/bottom.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/front.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox_ex/back.jpg")
     };
 
     unsigned int cubemapTexture;

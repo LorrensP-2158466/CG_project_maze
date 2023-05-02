@@ -24,7 +24,7 @@ public:
     }
 
     Floor()
-        : floor_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\floor.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\floor.frag")
+        : floor_shader("../floor.vert", "../floor.frag")
     {
         vertices = {
                 vertex({-1.f,  -1.f, 1.f}, vertex::colour_green),

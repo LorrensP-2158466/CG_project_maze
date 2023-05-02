@@ -9,13 +9,8 @@ layout (std140) uniform PV_mats
     mat4 view;
 };
 uniform mat4 model;
-
 out vec3 colour; // output a color to the fragment shader
 
-
-vec3 random (vec3 st) {
-    return vec3(fract(sin(dot(st.xyz, vec3(12.9898,78.233, 40.151)))*43758.5453123));
-}
 
 void main()
 {
