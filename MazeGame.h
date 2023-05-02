@@ -14,6 +14,7 @@
 #include "MazeWall.h"
 #include "Camera.h"
 #include "Floor.h"
+#include "Skybox.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,100.0f);
 
@@ -26,6 +27,7 @@ public:
     MazeGame()
         : wall{MazeWall()}
         , floor(Floor())
+        , skybox(Skybox())
         , _camera(){
         for (int i = 0; i < 100 /4 ; i += 2){
             _wall_offsets.emplace_back(-2, 0, i);
@@ -35,7 +37,7 @@ public:
         init_instance_vbo();
         bind_instances_to_wallvao();
         init_ubo_mats();
-
+        skybox.setCubemapTexture(skybox.loadCubemap());
     }
 
     // Init Uniform Buffer Object and set projection
@@ -78,6 +80,15 @@ public:
         floor.Draw();
     }
 
+    void drawSkybox() {
+        auto view = glm::mat4(glm::mat3(_camera.GetViewMatrix()));
+        glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        skybox.Draw();
+    }
+
     void update(float delta_t) {
         // we update the view matrix to the UBO
         _camera.update(delta_t);
@@ -95,6 +106,7 @@ private:
     GLuint _ubo_mv_mats;
     MazeWall wall;
     Floor floor;
+    Skybox skybox;
 };
 
 

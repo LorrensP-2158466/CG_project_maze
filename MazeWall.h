@@ -11,6 +11,7 @@
 #include "Vertex.h"
 #include "ShaderProgram.h"
 #include <iostream>
+#include <array>
 
 
 
@@ -42,7 +43,7 @@ public:
             2, 1, 5, 5, 6, 1, // top face
             0, 3, 7, 7, 4, 0// bottom face
         },
-        wall_shader(ShaderProgram("../wall.vert", "../wall.frag"))
+        wall_shader(ShaderProgram("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.frag"))
         {
         glUseProgram(wall_shader.program_id());
         unsigned int uniformBlockIndex = glGetUniformBlockIndex(wall_shader.program_id(), "PV_mats");
