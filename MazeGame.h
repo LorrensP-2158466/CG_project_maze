@@ -16,18 +16,59 @@
 #include "Floor.h"
 #include "Skybox.h"
 
-const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,100.0f);
+const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
 class MazeGame {
+    enum Type : char{
+        FILLED,
+        EMPTY
+    };
+    using MazeObject = std::vector<std::vector<Type>>;
 public:
     ~MazeGame(){
         glfwTerminate();
     }
     MazeGame()
         : _camera(){
+        load_matrix();
+        init_maze_wall();
         init_ubo_mats();
         //skybox.setCubemapTexture(skybox.loadCubemap());
     }
+
+    void init_maze_wall(){
+        // x is still x but the z component is here z;
+        int x = 0;
+        int y = 0;
+        std::vector<glm::vec3> poss;
+        for (const auto &row: _maze_model){
+            for (const auto &object: row){
+                if (object == FILLED){
+                    poss.emplace_back(y, 0, x);
+                }
+                x++;
+            }
+            y++;
+            x = 0;
+        }
+        walls.init_instances(poss);
+    }
+    void load_matrix(){
+        std::ifstream maze_text {"../maze.txt"};
+        std::stringstream text;
+        text << maze_text.rdbuf();
+        auto str_repr = text.str();
+        auto itr = str_repr.begin();
+        char c;
+        while ( (c = *(itr++)) != '\0'){
+            std::vector<Type> temp;
+            do {
+                if (c == '#') temp.emplace_back(FILLED);
+                else temp.emplace_back(EMPTY);
+            }while((c = *(itr++)) != '\n');
+            _maze_model.push_back(temp);
+        }
+    };
 
     // Init Uniform Buffer Object and set projection
     void init_ubo_mats(){
@@ -46,7 +87,6 @@ public:
 
 
     void Draw() {
-        //drawSkybox();
         floor.Draw();
         walls.draw();
     }
@@ -71,9 +111,10 @@ public:
     Camera _camera;
 private:
     GLuint _ubo_mv_mats;
+    MazeObject _maze_model;
     MazeWalls walls;
     Floor floor;
-   // Skybox skybox;
+    //Skybox skybox;
 };
 
 

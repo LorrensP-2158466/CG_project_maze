@@ -35,7 +35,7 @@ public:
     float Yaw = -80.f;
     float Pitch = 0.0f;
     // camera options
-    float MovementSpeed = 3.5F;
+    float MovementSpeed = 10.F;
     float _mouse_sens = 0.1f;
 
     // player attributes;
@@ -107,8 +107,8 @@ public:
             _is_jumping = true;
             velocity_y = 8.f;
         }
-        if (!_is_jumping && !_is_falling)
-            _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
+        // if (!_is_jumping && !_is_falling)
+        //     _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
