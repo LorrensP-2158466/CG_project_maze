@@ -2,9 +2,12 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "ShaderProgram.h"
+#include <string>
 
-#include "Vertex.h"
 #include "MazeGame.h"
+#include "Mesh.h"
+#include "Model.h"
+#include "common.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -18,6 +21,8 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
+
+
 
 
 //luckily c compilers guarantee allignement and ordering of struct fields
@@ -98,6 +103,11 @@ int main()
         return -1;
     }
 
+    ShaderProgram shader {std::string(ROOT_DEF_) + "assets/shader.vert", std::string(ROOT_DEF_) + "/assets/shader.frag"};
+    Model our_model = Model("../assets/wall_model.obj");
+
+    shader.use();
+    shader.setMat4("projection", glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f));
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
@@ -118,6 +128,15 @@ int main()
         maze.drawSkybox();
         maze.update(deltaTime);
         maze.Draw();
+
+        // hier tekent die die blok
+        shader.use();
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
+        shader.setMat4("model", model);
+        shader.setMat4("view", maze._camera.GetViewMatrix());
+        our_model.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -21,7 +21,7 @@ private:
 
 public:
     ShaderProgram() = delete; // must provide both shaders
-    ShaderProgram(const char* vertexPath, const char* fragmentPath)
+    ShaderProgram(const std::string& vertexPath, const std::string& fragmentPath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;

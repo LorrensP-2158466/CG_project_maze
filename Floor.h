@@ -59,8 +59,8 @@ public:
         glBindVertexArray(_vao);
         glUseProgram(floor_shader.program_id());
         glm::mat4 floorModel = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        floorModel = glm::translate(floorModel, glm::vec3(0, 0, -10.F)); // move
-        floorModel = glm::scale(floorModel, glm::vec3(10, 1, 10));
+        floorModel = glm::translate(floorModel, glm::vec3(22, 0, 0)); // move
+        floorModel = glm::scale(floorModel, glm::vec3(22, 1, 50));
         floor_shader.setMat4("model", floorModel);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);

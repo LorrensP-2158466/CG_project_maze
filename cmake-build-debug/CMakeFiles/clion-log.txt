@@ -2,6 +2,7 @@
 -- GLM_INCLUDE_DIR = /opt/homebrew/include
 -- GLM included at /opt/homebrew/include
 -- Found GLFW3 in /usr/local/include
+-- Found Assimp in assimp::assimp 
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug

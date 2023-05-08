@@ -28,7 +28,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 30,
+				"line" : 32,
 				"parent" : 0
 			},
 			{
@@ -40,19 +40,19 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 31,
+				"line" : 33,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 23,
+				"line" : 25,
 				"parent" : 0
 			},
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 29,
+				"line" : 31,
 				"parent" : 0
 			}
 		]
@@ -81,6 +81,11 @@
 				{
 					"backtrace" : 5,
 					"path" : "/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/includes"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "/opt/homebrew/include"
 				}
 			],
 			"language" : "CXX",
@@ -124,12 +129,17 @@
 				"role" : "libraryPath"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/lib",
+				"fragment" : "-Wl,-rpath,/Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/lib -Wl,-rpath,/opt/homebrew/lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
 				"fragment" : "-lglfw3",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "/opt/homebrew/lib/libassimp.5.2.4.dylib",
 				"role" : "libraries"
 			},
 			{
@@ -155,6 +165,10 @@
 			{
 				"backtrace" : 3,
 				"fragment" : "libGLAD.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/Library/Developer/CommandLineTools/SDKs/MacOSX13.sdk/usr/lib/libz.tbd",
 				"role" : "libraries"
 			}
 		],
