@@ -31,11 +31,12 @@ public:
     std::vector<Vertex>       _vertices;
     std::vector<unsigned int> _indices;
     std::vector<Texture>      _textures;
-
+    bool _is_instanced = false;
+    GLuint instance_amount;
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures){
-        _vertices = std::move(vertices);
-        _indices = std::move(indices);
-        _textures = std::move(textures);
+        _vertices = vertices;
+        _indices = indices;
+        _textures = textures;
 
         set_up_mesh();
     }
@@ -60,7 +61,29 @@ public:
 
         // draw mesh
         glBindVertexArray(_vao);
-        glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+        if (_is_instanced) glDrawElementsInstanced(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr, instance_amount);
+        else               glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(0);
+    }
+
+    void set_instance(GLuint amount){
+        _is_instanced = true;
+        instance_amount = amount;
+        glBindVertexArray(_vao);
+        // set attribute pointers for matrix (4 times vec4)
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
         glBindVertexArray(0);
     }
 private:
@@ -83,7 +106,7 @@ private:
 
         // vertex positions
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
         // vertex normals
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, norm));

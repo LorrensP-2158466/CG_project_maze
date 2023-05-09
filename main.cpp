@@ -103,11 +103,6 @@ int main()
         return -1;
     }
 
-    ShaderProgram shader {std::string(ROOT_DEF_) + "assets/shader.vert", std::string(ROOT_DEF_) + "/assets/shader.frag"};
-    Model our_model = Model("../assets/wall_model.obj");
-
-    shader.use();
-    shader.setMat4("projection", glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f));
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
@@ -125,18 +120,9 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         processInput(window, maze);
-        maze.drawSkybox();
+        //maze.drawSkybox();
         maze.update(deltaTime);
         maze.Draw();
-
-        // hier tekent die die blok
-        shader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));	// it's a bit too big for our scene, so scale it down
-        shader.setMat4("model", model);
-        shader.setMat4("view", maze._camera.GetViewMatrix());
-        our_model.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

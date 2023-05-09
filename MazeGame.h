@@ -15,6 +15,8 @@
 #include "Camera.h"
 #include "Floor.h"
 #include "Skybox.h"
+#include "Model.h"
+#include "MazeWall.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
@@ -28,12 +30,11 @@ public:
     ~MazeGame(){
         glfwTerminate();
     }
-    MazeGame()
-        : _camera(){
+    MazeGame(){
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
-        //skybox.setCubemapTexture(skybox.loadCubemap());
+        skybox.setCubemapTexture(skybox.loadCubemap());
     }
 
     void init_maze_wall(){
@@ -51,7 +52,7 @@ public:
             y++;
             x = 0;
         }
-        walls.init_instances(poss);
+        maze_walls.set_instances(poss);
     }
     void load_matrix(){
         std::ifstream maze_text {"../maze.txt"};
@@ -88,7 +89,7 @@ public:
 
     void Draw() {
         floor.Draw();
-        walls.draw();
+        maze_walls.draw();
     }
 
     void drawSkybox() {
@@ -112,9 +113,9 @@ public:
 private:
     GLuint _ubo_mv_mats;
     MazeObject _maze_model;
-    MazeWalls walls;
+    MazeWall maze_walls;
     Floor floor;
-    //Skybox skybox;
+    Skybox skybox;
 };
 
 

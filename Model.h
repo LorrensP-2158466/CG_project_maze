@@ -31,15 +31,24 @@ public:
             mesh.Draw(shader);
         }
     }
+
+    void set_instances(const std::vector<glm::mat4> instances){
+        for (auto & mesh: _meshes){
+            mesh.set_instance(instances.size());
+        }
+    }
 private:
 
-    void loadModel(std::string path){
+    // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
+    void loadModel(const std::string& path)
+    {
+        // read file via ASSIMP
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
         // check for errors
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
-            std::cerr << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+            std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
             return;
         }
         // retrieve the directory path of the filepath
@@ -48,7 +57,9 @@ private:
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene);
     }
-    void processNode(aiNode *node, const aiScene *scene){
+    // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
+    void processNode(aiNode *node, const aiScene *scene)
+    {
         // process each mesh located at the current node
         for(unsigned int i = 0; i < node->mNumMeshes; i++)
         {
@@ -62,6 +73,7 @@ private:
         {
             processNode(node->mChildren[i], scene);
         }
+
     }
     Mesh processMesh(aiMesh *mesh, const aiScene *scene)
     {
@@ -133,7 +145,6 @@ private:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-        // return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, textures);
     }
 

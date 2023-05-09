@@ -97,7 +97,8 @@
 			[
 				1,
 				2,
-				3
+				3,
+				4
 			]
 		}
 	],
@@ -122,6 +123,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "includes/common.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "MazeWall.h",
 			"sourceGroupIndex" : 1
 		}
 	],

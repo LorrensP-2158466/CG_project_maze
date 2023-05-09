@@ -25,7 +25,7 @@ if (APPLE)
     add_compile_definitions(ROOT_DEF_="../")
     set(LIBS glfw3 assimp::assimp "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 endif(APPLE)
-add_library(GLAD "glad.c" Model.h Mesh.h includes/common.h)
+add_library(GLAD "glad.c" Model.h Mesh.h includes/common.h MazeWall.h)
 set(LIBS ${LIBS} GLAD)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)
