@@ -41,6 +41,7 @@ public:
         for (auto pos : positions){
             auto model = glm::mat4(1.f);
             model = glm::translate(model, pos);
+            model = glm::scale(model, {1, 2, 1});
             model = glm::scale(model, glm::vec3(0.5));
             instances.push_back(model);
         }

@@ -84,7 +84,7 @@ public:
     }
 
     void Draw() {
-        floor.Draw();
+        floor.draw();
         maze_walls.draw();
     }
 
