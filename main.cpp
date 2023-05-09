@@ -32,13 +32,13 @@ void processInput(GLFWwindow *window, MazeGame& maze)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(FORWARD, deltaTime);
+        maze.process_keyboard_input(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(BACKWARD, deltaTime);
+        maze.process_keyboard_input(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(LEFT, deltaTime);
+        maze.process_keyboard_input(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(RIGHT, deltaTime);
+        maze.process_keyboard_input(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
         //maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
     }

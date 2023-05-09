@@ -11,7 +11,6 @@
 #include "glm/vec3.hpp"
 #include <vector>
 #include <iostream>
-#include "MazeWalls.h"
 #include "Camera.h"
 #include "Floor.h"
 #include "Skybox.h"
@@ -85,8 +84,6 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-
-
     void Draw() {
         floor.Draw();
         maze_walls.draw();
@@ -107,6 +104,36 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    void process_keyboard_input(Camera_Movement direction, float delta_t)
+    {
+        auto temp_camera = _camera;
+        temp_camera.ProcessKeyboard(direction, delta_t);
+        if (!collisions_with_camera_and_wall(delta_t, temp_camera)){
+            // movement dit not cause colision
+            _camera.ProcessKeyboard(direction, delta_t);
+        }
+    }
+
+    bool collisions_with_camera_and_wall(float delta_t, const Camera& camera){
+        auto c_pos = camera._pos;
+        // bounding box for camera
+        glm::vec3 minc = c_pos - glm::vec3(0.15f);
+        glm::vec3 maxc = c_pos + glm::vec3(0.15f);
+        for (const auto& wall_pos: maze_walls._positions) {
+            // bounding box for wall object
+            glm::vec3 minp = wall_pos - MazeWall::wall_size / 2.f;
+            glm::vec3 maxp = wall_pos + MazeWall::wall_size / 2.F;
+            // compare bounding boxes
+            auto inside = minp.x <= maxc.x && minc.x <= maxp.x &&
+                          minp.y <= maxc.y && minc.y <= maxp.y &&
+                          minp.z <= maxc.z && minc.z <= maxp.z;
+            if (inside) {
+                return true; // yeah, one collision is good enough
+            }
+        }
+        return false;
     }
 
     Camera _camera;

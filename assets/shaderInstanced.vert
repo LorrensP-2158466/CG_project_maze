@@ -14,6 +14,5 @@ layout (std140) uniform PV_mats
 void main()
 {
     TexCoords = tex;
-    vec3 temp = vec3(instance_matrix * vec4(pos, 1.f));
-    gl_Position = projection * view * instance_matrix * vec4(temp, 1.0);
+    gl_Position = projection * view * instance_matrix * vec4(pos, 1.0);
 }
