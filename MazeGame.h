@@ -33,7 +33,6 @@ public:
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
-        skybox.setCubemapTexture(skybox.loadCubemap());
     }
 
     void init_maze_wall(){
@@ -94,7 +93,7 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        //skybox.Draw();
+        skybox.Draw();
     }
 
     void update(float delta_t) {
