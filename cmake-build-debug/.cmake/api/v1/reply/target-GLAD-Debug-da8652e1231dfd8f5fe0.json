@@ -98,7 +98,8 @@
 				1,
 				2,
 				3,
-				4
+				4,
+				5
 			]
 		}
 	],
@@ -128,6 +129,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "MazeWall.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Cursor.h",
 			"sourceGroupIndex" : 1
 		}
 	],

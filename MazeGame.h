@@ -16,6 +16,7 @@
 #include "Skybox.h"
 #include "Model.h"
 #include "MazeWall.h"
+#include "Cursor.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
@@ -86,6 +87,7 @@ public:
     void Draw() {
         floor.draw();
         maze_walls.draw();
+        _cursor.draw();
     }
 
     void drawSkybox() {
@@ -136,6 +138,7 @@ public:
     }
 
     Camera _camera;
+    Cursor _cursor;
 private:
     GLuint _ubo_mv_mats;
     MazeObject _maze_model;
