@@ -8,6 +8,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include "glm/vec3.hpp"
 #include <vector>
 #include <iostream>
@@ -16,6 +17,8 @@
 #include "Skybox.h"
 #include "Model.h"
 #include "MazeWall.h"
+#include "Lamp.h"
+#include "ShaderProgram.h"
 #include "Cursor.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
@@ -30,10 +33,12 @@ public:
     ~MazeGame(){
         glfwTerminate();
     }
-    MazeGame(){
+    MazeGame()
+    {
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
+
     }
 
     void init_maze_wall(){
@@ -54,13 +59,14 @@ public:
         maze_walls.set_instances(poss);
     }
     void load_matrix(){
-        std::ifstream maze_text {"../maze.txt"};
+        std::ifstream maze_text {"C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\maze.txt"};
         std::stringstream text;
         text << maze_text.rdbuf();
         auto str_repr = text.str();
         auto itr = str_repr.begin();
         char c;
-        while ( (c = *(itr++)) != '\0'){
+        while ((str_repr.end() != (itr))){
+            c = *(itr++);
             std::vector<Type> temp;
             do {
                 if (c == '#') temp.emplace_back(FILLED);
@@ -80,11 +86,12 @@ public:
         glBindBufferRange(GL_UNIFORM_BUFFER, 0, _ubo_mv_mats, 0, 2 * sizeof(glm::mat4));
         // perspective never changes so we already insert it into the buffer
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &projection[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-    void Draw() {
+    void Draw() {;
+        lamp.Draw();
         floor.draw();
         maze_walls.draw();
         _cursor.draw();
@@ -93,7 +100,7 @@ public:
     void drawSkybox() {
         auto view = glm::mat4(glm::mat3(_camera.GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         skybox.Draw();
     }
@@ -103,8 +110,14 @@ public:
         _camera.update(delta_t);
         auto view = _camera.GetViewMatrix();
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        // TODO: set camera pos in UBO
+        // glUseProgram(_shader.program_id());
+        // _shader.setVec3("viewPos", _camera._pos);
+
+        maze_walls.update(_camera._pos);
     }
 
     void process_keyboard_input(Camera_Movement direction, float delta_t)
@@ -145,6 +158,12 @@ private:
     MazeWall maze_walls;
     Floor floor;
     Skybox skybox;
+    Lamp lamp;
+    // positions of the point lights
+    glm::vec3 pointLightPositions[2] = {
+        glm::vec3(8.0f,  3.0f,  20.0f),
+        glm::vec3(15.0f, 3.0f, 10.0f)
+    };
 };
 
 

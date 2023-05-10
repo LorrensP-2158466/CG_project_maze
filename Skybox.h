@@ -24,7 +24,7 @@ public:
     }
 
     Skybox()
-        : skybox_shader("../skybox.vert", "../skybox.frag")
+        : skybox_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.frag")
     {
         sky_vertices = {
                 // positions
