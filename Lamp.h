@@ -8,7 +8,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "Vertex.h"
 #include <iostream>
 #include "ShaderProgram.h"
 
@@ -54,7 +53,7 @@ public:
     void Draw() const {
         glBindVertexArray(_vao);
         glUseProgram(_shader.program_id());
-        for (unsigned int i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 5; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, pointLightPositions[i]);
@@ -113,9 +112,12 @@ public:
     };
 
     // positions of the point lights
-    glm::vec3 pointLightPositions[2] = {
+    glm::vec3 pointLightPositions[5] = {
         glm::vec3(8.0f,  3.0f,  20.0f),
-        glm::vec3(15.0f, 3.0f, 10.0f)
+        glm::vec3(15.0f, 3.0f, 10.0f),
+        glm::vec3(2.0f, 3.0f, 2.0f),
+        glm::vec3(4.0f, 3.0f, 9.0f),
+        glm::vec3(12.0f, 3.0f, 15.0f)
     };
     GLuint _vbo;
     GLuint _vao;

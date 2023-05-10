@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "ShaderProgram.h"
+#include <array>
 
 
 struct Cursor{
@@ -19,7 +20,7 @@ struct Cursor{
     }
 
     Cursor()
-        : shader("../assets/cursor.vert", "../assets/cursor.frag")
+        : shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\cursor.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\cursor.frag")
         , vertices({
             // vertical
             glm::vec3(-1,  1, 0) * weight,
