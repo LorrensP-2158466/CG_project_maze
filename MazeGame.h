@@ -37,8 +37,8 @@ public:
         glfwTerminate();
     }
     MazeGame()
-        : default_program(ROOT_DEF_ + "assets/shader.vert"_s, ROOT_DEF_ + "assets/shader.frag"_s)
-        , instanced_program(ROOT_DEF_ + "assets/shaderInstanced.vert"_s, ROOT_DEF_ + "assets/shader.frag"_s)
+        : default_program("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\shader.vert"_s, "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\shader.frag"_s)
+        , instanced_program("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\shaderInstanced.vert"_s, "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\shader.frag"_s)
         , light_objects{
                     PointLight::default_light_with_pos(glm::vec3(8.0f, 3.0f, 20.0f)),
                     PointLight::default_light_with_pos(glm::vec3(15.0f, 3.0f, 10.0f)),
@@ -72,7 +72,7 @@ public:
         maze_walls.set_instances(poss);
     }
     void load_matrix(){
-        std::ifstream maze_text {ROOT_DEF_ + "maze.txt"_s};
+        std::ifstream maze_text {"C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "maze.txt"_s};
         std::stringstream text;
         text << maze_text.rdbuf();
         auto str_repr = text.str();

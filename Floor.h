@@ -19,7 +19,7 @@ class Floor {
 public:
     Floor()
 
-        : floor("../assets/models/floor_model.obj"){
+        : floor("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\models\\floor_model.obj"){
     };
         void draw(ShaderProgram &shader){
             shader.use();
