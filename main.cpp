@@ -40,7 +40,7 @@ void processInput(GLFWwindow *window, MazeGame& maze)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         maze.process_keyboard_input(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        //maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
+        maze.process_keyboard_input(JUMP, 0.f); // delta t doesnt matter here;
     }
 }
 
@@ -67,7 +67,14 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn){
 }
 
 void mouse_click_callback(GLFWwindow *window, int button, int action, int mods){
-
+    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+        auto game = static_cast<MazeGame*>(glfwGetWindowUserPointer(window));
+        double xpos, ypos;
+        //getting cursor position
+        glfwGetCursorPos(window, &xpos, &ypos);
+        game->process_mouse_click(xpos, ypos);
+    }
 }
 
 

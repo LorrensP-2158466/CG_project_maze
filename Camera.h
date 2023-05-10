@@ -42,45 +42,31 @@ public:
 
     // player attributes;
     bool _is_jumping = false;
-    bool _is_falling = false;
-    const float GRAV = 5.f;
-    const float max_jump_height = 1.f;
+    const float GRAV = 9.81f;
     float velocity_y = 0.f;
     // float MouseSensitivity;
 
     // constructor with vectors
-    Camera() : _front(glm::vec3(0.0f, 0.0f, -1.0f))
+    Camera()
+        : _front(glm::vec3(0.0f, 0.0f, -1.0f))
+        , _pos(glm::vec3(0.0f, 0.0f, 0.f))
+        , _world_up(glm::vec3(0.0f, 1.0f, 0.0f))
     {
-        _pos      = glm::vec3(0.0f, 0.0f, 0.f);
-        _world_up = glm::vec3(0.0f, 1.0f, 0.0f);
         updateCameraVectors();
     }
     void update(float delta_t){
         // yeah this is broken as fuck
         auto cur_y = _pos.y;
-        if (_is_jumping && _pos.y <= max_jump_height){
-            std::cout << "in jump\n";
-            velocity_y -= GRAV * delta_t;
+        if (_is_jumping){
+            std::cout << velocity_y << std::endl;
             cur_y += velocity_y * delta_t;
-            _pos.y = cur_y;
-            if (_pos.y > max_jump_height) {
-                _is_jumping = false;
-                _is_falling = true;
-            }
-        }
-        // falling
-        if (_is_falling && _pos.y > 0.f){
-            std::cout << "in fall\n";
             velocity_y -= GRAV * delta_t;
-            cur_y -= velocity_y * delta_t;
             _pos.y = cur_y;
-            if (cur_y < 0.f){
-                _is_falling = false;
-                _pos.y = 0;
-                velocity_y = 0;
-            }
         }
-
+        if (_pos.y < 0.05) {
+            _pos.y = 0;
+            _is_jumping = false;
+        }
     };
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
@@ -101,12 +87,12 @@ public:
             _pos -= _right * velocity;
         if (direction == RIGHT)
             _pos += _right * velocity;
-        if (direction == JUMP && !_is_falling && !_is_jumping){
+        if (direction == JUMP  && !_is_jumping){
             _is_jumping = true;
-            velocity_y = 8.f;
+            velocity_y = 4.f;
         }
-         //if (!_is_jumping && !_is_falling)
-           //  _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
+        if (!_is_jumping)
+            _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
