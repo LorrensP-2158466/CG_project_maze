@@ -10,6 +10,7 @@
 #include <vector>
 #include "Vertex.h"
 #include <iostream>
+#include "ShaderProgram.h"
 
 
 
@@ -23,20 +24,13 @@ public:
         glDeleteBuffers(1, &_vbo);
     }
 
-    Floor()
-        : floor_shader("../floor.vert", "../floor.frag")
+    Floor() : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.frag") {}
+
+    Floor(ShaderProgram &shader)
+        : _shader(shader)
     {
-        vertices = {
-                vertex({-1.f,  -1.f, 1.f}, vertex::colour_green),
-                vertex({ 1.f,  -1.f, 1.f}, vertex::colour_green),
-                vertex({-1.F, -1.F, -1.f}, vertex::colour_green),
-                vertex({ -1.F, -1.F, -1.f}, vertex::colour_green),
-                vertex({ 1.f,  -1.f, 1.f}, vertex::colour_green),
-                vertex({ 1.f, -1.F, -1.f}, vertex::colour_green),
-        };
-        glUseProgram(floor_shader.program_id());
-        unsigned int uniformBlockIndex = glGetUniformBlockIndex(floor_shader.program_id(), "PV_mats");
-        glUniformBlockBinding(floor_shader.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
+        
+        glUseProgram(_shader.program_id());
         glGenVertexArrays(1, &_vao);
         glGenBuffers(1, &_vbo);
         init();
@@ -46,31 +40,39 @@ public:
         glBindVertexArray(_vao);
         // VBO of vertices binding
         glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertex), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+      
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
         glUseProgram(0);
     }
 
-    void Draw() const {
+    void Draw(ShaderProgram &shader) const {
         glBindVertexArray(_vao);
-        glUseProgram(floor_shader.program_id());
+        glUseProgram(shader.program_id());
         glm::mat4 floorModel = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         floorModel = glm::translate(floorModel, glm::vec3(22, 0, 0)); // move
         floorModel = glm::scale(floorModel, glm::vec3(22, 1, 50));
-        floor_shader.setMat4("model", floorModel);
+        _shader.setMat4("model", floorModel);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
     }
 
 
-    std::vector<vertex> vertices;
+    float vertices[32] = {
+        0.5f,  0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // 1
+        0.5f,  0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // 2
+        -0.5f, 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+    };
     GLuint _vbo;
     GLuint _vao;
-    ShaderProgram floor_shader;
+    ShaderProgram _shader;
 };
 
 

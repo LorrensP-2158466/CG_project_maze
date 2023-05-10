@@ -17,6 +17,8 @@
 #include "Skybox.h"
 #include "Model.h"
 #include "MazeWall.h"
+#include "Lamp.h"
+#include "ShaderProgram.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
@@ -30,11 +32,46 @@ public:
     ~MazeGame(){
         glfwTerminate();
     }
-    MazeGame(){
+    MazeGame()
+        : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.frag") 
+    {
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
         skybox.setCubemapTexture(skybox.loadCubemap());
+        glUseProgram(_shader.program_id());
+        unsigned int uniformBlockIndex = glGetUniformBlockIndex(_shader.program_id(), "PV_mats");
+        glUniformBlockBinding(_shader.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
+        init_shader();
+        floor = Floor(_shader);
+    }
+
+    void init_shader() {
+        glUseProgram(_shader.program_id());
+        _shader.setInt("material.diffuse", 0);
+        _shader.setInt("material.specular", 1);
+
+        _shader.setVec3("viewPos", _camera._pos);
+        _shader.setFloat("material.shininess", 32.0f);
+        // point light 1
+        _shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        _shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+        _shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        _shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        _shader.setFloat("pointLights[0].constant", 1.0f);
+        _shader.setFloat("pointLights[0].linear", 0.09f);
+        _shader.setFloat("pointLights[0].quadratic", 0.032f);
+        // point light 2
+        _shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+        _shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+        _shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+        _shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+        _shader.setFloat("pointLights[1].constant", 1.0f);
+        _shader.setFloat("pointLights[1].linear", 0.09f);
+        _shader.setFloat("pointLights[1].quadratic", 0.032f);
+
+        //glm::mat4 model = glm::mat4(1.0f);
+        //_shader.setMat4("model", model);
     }
 
     void init_maze_wall(){
@@ -55,13 +92,14 @@ public:
         maze_walls.set_instances(poss);
     }
     void load_matrix(){
-        std::ifstream maze_text {"../maze.txt"};
+        std::ifstream maze_text {"C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\maze.txt"};
         std::stringstream text;
         text << maze_text.rdbuf();
         auto str_repr = text.str();
         auto itr = str_repr.begin();
         char c;
-        while ( (c = *(itr++)) != '\0'){
+        while ((str_repr.end() != (itr))){
+            c = *(itr++);
             std::vector<Type> temp;
             do {
                 if (c == '#') temp.emplace_back(FILLED);
@@ -88,8 +126,10 @@ public:
 
 
     void Draw() {
-        floor.Draw();
+        _shader.use();
+        floor.Draw(_shader);
         maze_walls.draw();
+        lamp.Draw(); 
     }
 
     void drawSkybox() {
@@ -107,6 +147,11 @@ public:
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        glUseProgram(_shader.program_id());
+        _shader.setVec3("viewPos", _camera._pos);
+
+        maze_walls.update(_camera._pos);
     }
 
     Camera _camera;
@@ -116,6 +161,14 @@ private:
     MazeWall maze_walls;
     Floor floor;
     Skybox skybox;
+    Lamp lamp;
+    ShaderProgram _shader; 
+
+    // positions of the point lights
+    glm::vec3 pointLightPositions[2] = {
+        glm::vec3(8.0f,  3.0f,  20.0f),
+        glm::vec3(15.0f, 3.0f, 10.0f)
+    };
 };
 
 

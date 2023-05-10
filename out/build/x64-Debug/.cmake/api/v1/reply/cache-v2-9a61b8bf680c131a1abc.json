@@ -2,6 +2,30 @@
 	"entries" : 
 	[
 		{
+			"name" : "ASSIMP_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/hidde/OneDrive/Documenten/Hidde Uhasselt/2e Bach/Computer Graphics/CG_project_maze/includes"
+		},
+		{
+			"name" : "ASSIMP_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/hidde/OneDrive/Documenten/Hidde Uhasselt/2e Bach/Computer Graphics/CG_project_maze/lib/assimp.lib"
+		},
+		{
 			"name" : "CMAKE_AR",
 			"properties" : 
 			[

@@ -73,7 +73,7 @@ public:
                 glm::vec2{ 0.0, 0.0 },
 
             }
-            , wall_shader(ShaderProgram("../wall.vert", "../wall.frag"))
+            , wall_shader(ShaderProgram("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\wall.frag"))
         {
         for (int i = 0; i < 100 ; i++){
             _wall_offsets.emplace_back(-2,  0, i);
@@ -141,7 +141,7 @@ public:
         // load image, create texture and generate mipmaps
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-        unsigned char *data = stbi_load("../Red_brick_wall_texture.JPG", &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\Red_brick_wall_texture.JPG", &width, &height, &nrChannels, 0);
         if (data)
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);

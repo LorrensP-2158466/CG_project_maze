@@ -16,6 +16,7 @@
 			"add_executable",
 			"link_directories",
 			"target_link_libraries",
+			"add_compile_definitions",
 			"include_directories"
 		],
 		"files" : 
@@ -30,7 +31,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 24,
+				"line" : 33,
 				"parent" : 0
 			},
 			{
@@ -42,13 +43,19 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 25,
+				"line" : 34,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
 				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 32,
 				"parent" : 0
 			}
 		]
@@ -65,10 +72,17 @@
 					"fragment" : "-std:c++17"
 				}
 			],
-			"includes" : 
+			"defines" : 
 			[
 				{
 					"backtrace" : 4,
+					"define" : "ROOT_DEF_=\"C:/Users/hidde/OneDrive/Documenten/Hidde Uhasselt/2e Bach/Computer Graphics/CG_project_maze/\""
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
 					"path" : "C:/Users/hidde/OneDrive/Documenten/Hidde Uhasselt/2e Bach/Computer Graphics/CG_project_maze/includes"
 				}
 			],
@@ -119,7 +133,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "opengl32.lib",
+				"fragment" : "assimp.lib",
 				"role" : "libraries"
 			},
 			{
