@@ -91,7 +91,7 @@ public:
 
         if (direction == JUMP  && !_is_jumping){
             _is_jumping = true;
-            velocity_y = 4.f;
+            velocity_y = 4.0f;
         }
         if (!_is_jumping)
             _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0

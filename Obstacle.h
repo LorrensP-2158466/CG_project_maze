@@ -18,7 +18,7 @@
 struct Obstacle{
 
     Obstacle(glm::vec3 pos)
-        : _obstacle((ROOT_DEF_ + "/assets/models/obstacle_model.obj"_s).c_str())
+        : _obstacle(("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze" + "\\assets\\models\\obstacle_model.obj"_s).c_str())
         , _pos(pos){}
 
 
