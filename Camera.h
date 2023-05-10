@@ -37,7 +37,7 @@ public:
     float Yaw = -80.f;
     float Pitch = 0.0f;
     // camera options
-    float MovementSpeed = 4.F;
+    float MovementSpeed = 3.5F;
     float _mouse_sens = 0.1f;
 
     // player attributes;

@@ -80,7 +80,7 @@ public:
         glUseProgram(0);
     }
 
-    void Draw(const std::array<PointLight, 5> lights) const {
+    void Draw(const std::array<PointLight, 6> lights) const {
         glBindVertexArray(_vao);
         glUseProgram(_shader.program_id());
         for (const auto& l: lights)
