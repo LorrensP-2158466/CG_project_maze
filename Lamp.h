@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include "ShaderProgram.h"
+#include <array>
 
 
 
@@ -54,7 +55,7 @@ public:
     }
 
     Lamp()
-        : _shader(ROOT_DEF_ + "assets/lamp_shader.vert"_s, ROOT_DEF_ + "assets/lamp_shader.frag"_s)
+        : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\lamp_shader.vert"_s, "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "assets\\lamp_shader.frag"_s)
     {
         
         glUseProgram(_shader.program_id());

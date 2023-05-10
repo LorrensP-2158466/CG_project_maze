@@ -24,7 +24,7 @@ public:
     }
 
     Skybox()
-        : skybox_shader(ROOT_DEF_ + "skybox.vert"_s, ROOT_DEF_ + "skybox.frag"_s)
+        : skybox_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "skybox.vert"_s, "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\" + "skybox.frag"_s)
     {
         sky_vertices = {
                 // positions
@@ -134,12 +134,12 @@ public:
 
     std::vector<std::string> faces =
     {
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\right.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\left.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\top.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\bottom.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\front.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\back.jpg")
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\right.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\left.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\top.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\bottom.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\front.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skyboxnight\\back.jpg")
     };
 
     unsigned int cubemapTexture;

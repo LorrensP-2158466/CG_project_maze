@@ -9,6 +9,11 @@
 #include "Model.h"
 #include "common.h"
 
+#include <irrklang/irrKlang.h>
+using namespace irrklang;
+
+ISoundEngine* SoundEngine = createIrrKlangDevice();
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 // settings
@@ -90,9 +95,11 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
+    SoundEngine->play2D("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\audio\\freebird.mp3", true);
+
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Project Maze", nullptr, nullptr);
     if (window == NULL)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;

@@ -23,7 +23,7 @@ public:
     constexpr static glm::vec3 dz {0, 0, 1};
 
     MazeWall()
-        : _wall("../assets/models/wall_model.obj"){}
+        : _wall("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\models\\wall_model.obj"){}
 
     void draw(ShaderProgram &shader){
         shader.use();

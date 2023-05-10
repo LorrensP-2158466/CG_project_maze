@@ -60,6 +60,7 @@ public:
         if (_is_jumping){
             std::cout << velocity_y << std::endl;
             cur_y += velocity_y * delta_t;
+
             velocity_y -= GRAV * delta_t;
             _pos.y = cur_y;
         }
@@ -87,6 +88,7 @@ public:
             _pos -= _right * velocity;
         if (direction == RIGHT)
             _pos += _right * velocity;
+
         if (direction == JUMP  && !_is_jumping){
             _is_jumping = true;
             velocity_y = 4.f;
