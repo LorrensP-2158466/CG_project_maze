@@ -66,6 +66,10 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn){
     game->_camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
+void mouse_click_callback(GLFWwindow *window, int button, int action, int mods){
+
+}
+
 
 int main()
 {
@@ -92,7 +96,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
-    //glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_click_callback);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
     // glad: load all OpenGL function pointers
