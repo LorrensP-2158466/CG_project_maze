@@ -32,13 +32,13 @@ void processInput(GLFWwindow *window, MazeGame& maze)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(FORWARD, deltaTime);
+        maze.process_keyboard_input(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(BACKWARD, deltaTime);
+        maze.process_keyboard_input(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(LEFT, deltaTime);
+        maze.process_keyboard_input(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        maze._camera.ProcessKeyboard(RIGHT, deltaTime);
+        maze.process_keyboard_input(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
         //maze._camera.ProcessKeyboard(JUMP, 0.f); // delta t doesnt matter here;
     }
@@ -64,6 +64,10 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn){
     // explained in main
     auto game = static_cast<MazeGame*>(glfwGetWindowUserPointer(window));
     game->_camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void mouse_click_callback(GLFWwindow *window, int button, int action, int mods){
+
 }
 
 
@@ -92,7 +96,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
-    //glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_click_callback);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
     // glad: load all OpenGL function pointers
@@ -120,7 +124,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
         processInput(window, maze);
-        //maze.drawSkybox();
+        maze.drawSkybox();
         maze.update(deltaTime);
         maze.Draw();
 

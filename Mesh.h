@@ -20,11 +20,21 @@ struct Vertex{
 };
 
 struct Texture {
-    GLuint id;
+    Texture() = default;
+    Texture(GLuint _id, std::string _type, std::string _path)
+        : id{_id}
+        , type(std::move(_type))
+        , path(std::move(_path))
+        {}
+
+
+    GLuint id{};
     std::string type;
     std::string path;
 };
 
+
+/// Used from learn opengl book, but altered to use instancing
 class Mesh {
 public:
     // mesh data
@@ -54,7 +64,7 @@ public:
             else if(name == "texture_specular")
                 number = std::to_string(specularNr++);
 
-            shader.setInt(("material." + name + number).c_str(), i);
+            shader.setInt("material." + (name += number), i);
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }
         glActiveTexture(GL_TEXTURE0);
@@ -69,16 +79,17 @@ public:
     void set_instance(GLuint amount){
         _is_instanced = true;
         instance_amount = amount;
+        GLint mat4_size = sizeof(glm::mat4);
         glBindVertexArray(_vao);
         // set attribute pointers for matrix (4 times vec4)
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, mat4_size, nullptr);
         glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, mat4_size, (void*)(sizeof(glm::vec4)));
         glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, mat4_size, (void*)(2 * sizeof(glm::vec4)));
         glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, mat4_size, (void*)(3 * sizeof(glm::vec4)));
 
         glVertexAttribDivisor(3, 1);
         glVertexAttribDivisor(4, 1);

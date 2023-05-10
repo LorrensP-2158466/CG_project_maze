@@ -14,7 +14,9 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "stb_image.h"
 
+/// Used from learn opengl book, but altered to use instancing
 class Model
 {
 public:
@@ -22,7 +24,7 @@ public:
     std::vector<Mesh>    _meshes;
     std::string directory;
     bool _gamma_correction;
-    Model(const char *path)
+    explicit Model(const char *path)
     {
         loadModel(path);
     }
@@ -32,7 +34,7 @@ public:
         }
     }
 
-    void set_instances(const std::vector<glm::mat4> instances){
+    void set_instances(const std::vector<glm::mat4> &instances){
         for (auto & mesh: _meshes){
             mesh.set_instance(instances.size());
         }
@@ -85,7 +87,7 @@ private:
         // walk through each of the mesh's vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
-            Vertex vertex;
+            Vertex vertex{};
             glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
             // positions
             vector.x = mesh->mVertices[i].x;
@@ -145,11 +147,11 @@ private:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-        return Mesh(vertices, indices, textures);
+        return {vertices, indices, textures};
     }
 
     std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
-                                         std::string typeName){
+                                         const std::string &typeName){
         std::vector<Texture> textures;
         for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
         {
@@ -157,30 +159,26 @@ private:
             mat->GetTexture(type, i, &str);
             // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
             bool skip = false;
-            for(unsigned int j = 0; j < _textures_loaded.size(); j++)
+            for(const auto & texture : _textures_loaded)
             {
-                if(std::strcmp(_textures_loaded[j].path.data(), str.C_Str()) == 0)
+                if(std::strcmp(texture.path.c_str(), str.C_Str()) == 0)
                 {
-                    textures.push_back(_textures_loaded[j]);
+                    textures.push_back(texture);
                     skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
                     break;
                 }
             }
             if(!skip)
             {   // if texture hasn't been loaded already, load it
-                Texture texture;
-                texture.id = TextureFromFile(str.C_Str(), this->directory, _gamma_correction);
-                texture.type = typeName;
-                texture.path = str.C_Str();
-                textures.push_back(texture);
-                _textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
+                textures.emplace_back(TextureFromFile(str.C_Str(), this->directory, _gamma_correction), typeName, str.C_Str());
+                _textures_loaded.push_back(textures.back());  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
             }
         }
         return textures;
     }
 
 private:
-    unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma)
+    static unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma)
     {
         auto filename = std::string(path);
         filename = directory + '\\' + filename;
@@ -189,7 +187,7 @@ private:
         glGenTextures(1, &textureID);
 
         int width, height, nrComponents;
-        unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+        auto data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
         if (data)
         {
             GLenum format;

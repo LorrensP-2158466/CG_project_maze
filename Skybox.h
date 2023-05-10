@@ -15,89 +15,81 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
-
-
-
 class Skybox {
 public:
 
     ~Skybox() {
-        glDeleteVertexArrays(1, &_vao);
-        glDeleteBuffers(1, &_vbo);
+        glDeleteVertexArrays(1, &_sky_vao);
+        glDeleteBuffers(1, &_sky_vbo);
     }
 
     Skybox()
         : skybox_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.frag")
     {
-        vertices = {
-            // positions          
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
+        sky_vertices = {
+                // positions
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
 
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
 
-             vertex({1.0f, -1.0f, -1.0f}, vertex::colour_red),
-             vertex({1.0f, -1.0f,  1.0f}, vertex::colour_red),
-             vertex({1.0f,  1.0f,  1.0f}, vertex::colour_red),
-             vertex({1.0f,  1.0f,  1.0f}, vertex::colour_red),
-             vertex({1.0f,  1.0f, -1.0f}, vertex::colour_red),
-             vertex({1.0f, -1.0f, -1.0f}, vertex::colour_red),
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
 
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
 
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f,  1.0f}, vertex::colour_red),
-            vertex({-1.0f,  1.0f, -1.0f}, vertex::colour_red),
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
 
-            vertex({-1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f, -1.0f}, vertex::colour_red),
-            vertex({-1.0f, -1.0f,  1.0f}, vertex::colour_red),
-            vertex({ 1.0f, -1.0f,  1.0f}, vertex::colour_red)
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f
         };
         glUseProgram(skybox_shader.program_id());
         unsigned int uniformBlockIndex = glGetUniformBlockIndex(skybox_shader.program_id(), "PV_mats");
         glUniformBlockBinding(skybox_shader.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
-        glGenVertexArrays(1, &_vao);
-        glGenBuffers(1, &_vbo);
-        init();
+        init_sky_buffers();
+        loadCubemap();
     }
 
-    void init() {
-        glBindVertexArray(_vao);
-        // VBO of vertices binding
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertex), &vertices[0], GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    void init_sky_buffers(){
+        glGenVertexArrays(1, &_sky_vao);
+        glGenBuffers(1, &_sky_vbo);
+        glBindVertexArray(_sky_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, _sky_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sky_vertices.size() * sizeof(float), sky_vertices.data(), GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glUseProgram(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     }
 
     void Draw() const {
         glDepthMask(GL_FALSE);
-        glBindVertexArray(_vao);
+        glBindVertexArray(_sky_vao);
         glUseProgram(skybox_shader.program_id());
         glm::mat4 skyboxModel = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         skybox_shader.setMat4("model", skyboxModel);
@@ -107,16 +99,15 @@ public:
         glDepthMask(GL_TRUE);
     }
 
-    unsigned int loadCubemap()
+    void loadCubemap()
     {
-        unsigned int textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+        glGenTextures(1, &cubemapTexture);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 
         int width, height, nrChannels;
         for (unsigned int i = 0; i < faces.size(); i++)
         {
-            unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+            auto data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
             if (data)
             {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -136,29 +127,25 @@ public:
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        return textureID;
-    }
-
-    void setCubemapTexture(unsigned int ct) {
-        cubemapTexture = ct;
         skybox_shader.use();
-        skybox_shader.setInt("skybox", ct); 
+        skybox_shader.setInt("skybox", 0);
+
     }
 
     std::vector<std::string> faces =
     {
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/right.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/left.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/top.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/bottom.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/front.jpg"),
-        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox_ex/back.jpg")
+        std::string (ROOT_DEF_) + std::string ("skybox/right.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox/left.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox/top.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox/bottom.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox/front.jpg"),
+        std::string (ROOT_DEF_) + std::string ("skybox/back.jpg")
     };
 
     unsigned int cubemapTexture;
-    std::vector<vertex> vertices;
-    GLuint _vbo;
-    GLuint _vao;
+    std::vector<float> sky_vertices;
+    GLuint _sky_vao;
+    GLuint _sky_vbo;
     ShaderProgram skybox_shader;
 };
 

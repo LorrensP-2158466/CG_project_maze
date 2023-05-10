@@ -2,7 +2,14 @@
 -- GLM_INCLUDE_DIR = /opt/homebrew/include
 -- GLM included at /opt/homebrew/include
 -- Found GLFW3 in /usr/local/include
--- Found Assimp in assimp::assimp 
+-- Found ASSIMP: /opt/homebrew/lib/libassimp.dylib
+-- Found Assimp in /opt/homebrew/lib/libassimp.dylib 
 -- Configuring done
+CMake Error at CMakeLists.txt:33 (add_executable):
+  Target "opengl_project" links to target "assimp::assimp" but the target was
+  not found.  Perhaps a find_package() call is missing for an IMPORTED
+  target, or an ALIAS target is missing?
+
+
 -- Generating done
--- Build files have been written to: /Users/lorrens/Informatica/Bach2/Semester2/CG/OpenGL/CG_project_maze/cmake-build-debug
+CMake Generate step failed.  Build files cannot be regenerated correctly.

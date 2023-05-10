@@ -31,11 +31,13 @@ public:
     glm::vec3 _right;
     glm::vec3 _world_up;
 
+
+
     // euler Angles
     float Yaw = -80.f;
     float Pitch = 0.0f;
     // camera options
-    float MovementSpeed = 10.F;
+    float MovementSpeed = 4.F;
     float _mouse_sens = 0.1f;
 
     // player attributes;
@@ -49,14 +51,10 @@ public:
     // constructor with vectors
     Camera() : _front(glm::vec3(0.0f, 0.0f, -1.0f))
     {
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-                    glm::vec3(0.0f, 0.0f, 0.0f),
-                    glm::vec3(0.0f, 1.0f, 0.0f));
-        _pos      = glm::vec3(0.0f, 0.0f, -3.f);
+        _pos      = glm::vec3(0.0f, 0.0f, 3.f);
         _world_up = glm::vec3(0.0f, 1.0f, 0.0f);
         updateCameraVectors();
     }
-
     void update(float delta_t){
         // yeah this is broken as fuck
         auto cur_y = _pos.y;
@@ -107,8 +105,8 @@ public:
             _is_jumping = true;
             velocity_y = 8.f;
         }
-        // if (!_is_jumping && !_is_falling)
-        //     _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
+         //if (!_is_jumping && !_is_falling)
+           //  _pos.y = 0.f; // user can not fly, so we hold the pos_y to 0
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

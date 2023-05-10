@@ -8,10 +8,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include "glm/vec3.hpp"
 #include <vector>
 #include <iostream>
-#include "MazeWalls.h"
 #include "Camera.h"
 #include "Floor.h"
 #include "Skybox.h"
@@ -19,6 +19,7 @@
 #include "MazeWall.h"
 #include "Lamp.h"
 #include "ShaderProgram.h"
+#include "Cursor.h"
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
@@ -33,45 +34,11 @@ public:
         glfwTerminate();
     }
     MazeGame()
-        : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.frag") 
     {
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
-        skybox.setCubemapTexture(skybox.loadCubemap());
-        glUseProgram(_shader.program_id());
-        unsigned int uniformBlockIndex = glGetUniformBlockIndex(_shader.program_id(), "PV_mats");
-        glUniformBlockBinding(_shader.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
-        init_shader();
-        floor = Floor(_shader);
-    }
 
-    void init_shader() {
-        glUseProgram(_shader.program_id());
-        _shader.setInt("material.diffuse", 0);
-        _shader.setInt("material.specular", 1);
-
-        _shader.setVec3("viewPos", _camera._pos);
-        _shader.setFloat("material.shininess", 32.0f);
-        // point light 1
-        _shader.setVec3("pointLights[0].position", pointLightPositions[0]);
-        _shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-        _shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-        _shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-        _shader.setFloat("pointLights[0].constant", 1.0f);
-        _shader.setFloat("pointLights[0].linear", 0.09f);
-        _shader.setFloat("pointLights[0].quadratic", 0.032f);
-        // point light 2
-        _shader.setVec3("pointLights[1].position", pointLightPositions[1]);
-        _shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-        _shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-        _shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-        _shader.setFloat("pointLights[1].constant", 1.0f);
-        _shader.setFloat("pointLights[1].linear", 0.09f);
-        _shader.setFloat("pointLights[1].quadratic", 0.032f);
-
-        //glm::mat4 model = glm::mat4(1.0f);
-        //_shader.setMat4("model", model);
     }
 
     void init_maze_wall(){
@@ -119,25 +86,23 @@ public:
         glBindBufferRange(GL_UNIFORM_BUFFER, 0, _ubo_mv_mats, 0, 2 * sizeof(glm::mat4));
         // perspective never changes so we already insert it into the buffer
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &projection[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-
-
-    void Draw() {
-        _shader.use();
-        floor.Draw(_shader);
+    void Draw() {;
+        lamp.Draw();
+        floor.draw();
         maze_walls.draw();
-        lamp.Draw(); 
+        _cursor.draw();
     }
 
     void drawSkybox() {
         auto view = glm::mat4(glm::mat3(_camera.GetViewMatrix()));
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        //skybox.Draw();
+        skybox.Draw();
     }
 
     void update(float delta_t) {
@@ -145,16 +110,48 @@ public:
         _camera.update(delta_t);
         auto view = _camera.GetViewMatrix();
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        glUseProgram(_shader.program_id());
-        _shader.setVec3("viewPos", _camera._pos);
+        // TODO: set camera pos in UBO
+        // glUseProgram(_shader.program_id());
+        // _shader.setVec3("viewPos", _camera._pos);
 
         maze_walls.update(_camera._pos);
     }
 
+    void process_keyboard_input(Camera_Movement direction, float delta_t)
+    {
+        auto temp_camera = _camera;
+        temp_camera.ProcessKeyboard(direction, delta_t);
+        if (!collisions_with_camera_and_wall(delta_t, temp_camera)){
+            // movement dit not cause colision
+            _camera.ProcessKeyboard(direction, delta_t);
+        }
+    }
+
+    bool collisions_with_camera_and_wall(float delta_t, const Camera& camera){
+        auto c_pos = camera._pos;
+        // bounding box for camera
+        glm::vec3 minc = c_pos - glm::vec3(0.15f);
+        glm::vec3 maxc = c_pos + glm::vec3(0.15f);
+        for (const auto& wall_pos: maze_walls._positions) {
+            // bounding box for wall object
+            glm::vec3 minp = wall_pos - MazeWall::wall_size / 2.f;
+            glm::vec3 maxp = wall_pos + MazeWall::wall_size / 2.F;
+            // compare bounding boxes
+            auto inside = minp.x <= maxc.x && minc.x <= maxp.x &&
+                          minp.y <= maxc.y && minc.y <= maxp.y &&
+                          minp.z <= maxc.z && minc.z <= maxp.z;
+            if (inside) {
+                return true; // yeah, one collision is good enough
+            }
+        }
+        return false;
+    }
+
     Camera _camera;
+    Cursor _cursor;
 private:
     GLuint _ubo_mv_mats;
     MazeObject _maze_model;
@@ -162,8 +159,6 @@ private:
     Floor floor;
     Skybox skybox;
     Lamp lamp;
-    ShaderProgram _shader; 
-
     // positions of the point lights
     glm::vec3 pointLightPositions[2] = {
         glm::vec3(8.0f,  3.0f,  20.0f),

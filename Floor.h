@@ -7,72 +7,62 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <vector>
-#include "Vertex.h"
+#include "Model.h"
 #include <iostream>
 #include "ShaderProgram.h"
 
 
-
-
-
 class Floor {
 public:
-
-    ~Floor() {
-        glDeleteVertexArrays(1, &_vao);
-        glDeleteBuffers(1, &_vbo);
-    }
-
-    Floor() : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\shader.frag") {}
-
-    Floor(ShaderProgram &shader)
-        : _shader(shader)
-    {
-        
-        glUseProgram(_shader.program_id());
-        glGenVertexArrays(1, &_vao);
-        glGenBuffers(1, &_vbo);
-        init();
-    }
-
-    void init() {
-        glBindVertexArray(_vao);
-        // VBO of vertices binding
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-      
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glUseProgram(0);
-    }
-
-    void Draw(ShaderProgram &shader) const {
-        glBindVertexArray(_vao);
-        glUseProgram(shader.program_id());
-        glm::mat4 floorModel = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        floorModel = glm::translate(floorModel, glm::vec3(22, 0, 0)); // move
-        floorModel = glm::scale(floorModel, glm::vec3(22, 1, 50));
-        _shader.setMat4("model", floorModel);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-    }
-
-
-    float vertices[32] = {
-        0.5f,  0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // 1
-        0.5f,  0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // 2
-        -0.5f, 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+    Floor()
+        : _shader("../assets/shader.vert", "../assets/shader.frag")
+        , floor("../assets/models/floor_model.obj"){
+        _shader.use();
+        unsigned int uniformBlockIndex = glGetUniformBlockIndex(_shader.program_id(), "PV_mats");
+        glUniformBlockBinding(_shader.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
+        auto model = glm::mat4(1.f);
+        model = glm::translate(model, glm::vec3 {10, -1, 10});
+        //model = glm::rotate(model, 360.f, glm::vec3(0, 3, 0));
+        _shader.setMat4("model", model);
     };
-    GLuint _vbo;
-    GLuint _vao;
+
+    void init_shader(){
+            glUseProgram(_shader.program_id());
+            _shader.setInt("material.diffuse", 0);
+            _shader.setInt("material.specular", 1);
+
+            /// todo: view pos in
+            //_shader.setVec3("viewPos", _camera._pos);
+            _shader.setFloat("material.shininess", 32.0f);
+            // point light 1
+            _shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+            _shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+            _shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+            _shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+            _shader.setFloat("pointLights[0].constant", 1.0f);
+            _shader.setFloat("pointLights[0].linear", 0.09f);
+            _shader.setFloat("pointLights[0].quadratic", 0.032f);
+            // point light 2
+            _shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+            _shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+            _shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+            _shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+            _shader.setFloat("pointLights[1].constant", 1.0f);
+            _shader.setFloat("pointLights[1].linear", 0.09f);
+            _shader.setFloat("pointLights[1].quadratic", 0.032f);
+    };
+        void draw(){
+            _shader.use();
+            floor.Draw(_shader);
+        }
     ShaderProgram _shader;
+    Model floor;
+    glm::vec3 pointLightPositions[2] = {
+            glm::vec3(8.0f,  3.0f,  20.0f),
+            glm::vec3(15.0f, 3.0f, 10.0f)
+    };
 };
 
 
