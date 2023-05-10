@@ -8,13 +8,42 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "Vertex.h"
 #include <iostream>
 #include "ShaderProgram.h"
 
 
 
+constexpr static glm::vec3 default_ambient {0.05f, 0.05f, 0.05};
+constexpr static glm::vec3 default_diffuse {0.8f, 0.8f, 0.8f};
+constexpr static glm::vec3 default_specular {1.0f, 1.0f, 1.0f};
+constexpr static auto default_constant = 1.0f;
+constexpr static auto default_quadratic =0.032f;
+constexpr static auto default_linear = 0.09f;
 
+struct PointLight {
+
+    static PointLight default_light_with_pos(glm::vec3 pos){
+        return {
+            .position = pos,
+            .constant = default_constant,
+            .linear = default_linear,
+            .quadratic = default_quadratic,
+            .ambient = default_ambient,
+            .diffuse = default_diffuse,
+            .specular = default_specular,
+        };
+    }
+
+    glm::vec3 position;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
 
 class Lamp {
 public:
@@ -25,7 +54,7 @@ public:
     }
 
     Lamp()
-        : _shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\lamp_shader.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\assets\\lamp_shader.frag")
+        : _shader(ROOT_DEF_ + "assets/lamp_shader.vert"_s, ROOT_DEF_ + "assets/lamp_shader.frag"_s)
     {
         
         glUseProgram(_shader.program_id());
@@ -51,13 +80,13 @@ public:
         glUseProgram(0);
     }
 
-    void Draw() const {
+    void Draw(const std::array<PointLight, 5> lights) const {
         glBindVertexArray(_vao);
         glUseProgram(_shader.program_id());
-        for (unsigned int i = 0; i < 2; i++)
+        for (const auto& l: lights)
         {
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::translate(model, l.position);
             model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
             _shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -112,11 +141,6 @@ public:
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
     };
 
-    // positions of the point lights
-    glm::vec3 pointLightPositions[2] = {
-        glm::vec3(8.0f,  3.0f,  20.0f),
-        glm::vec3(15.0f, 3.0f, 10.0f)
-    };
     GLuint _vbo;
     GLuint _vao;
     ShaderProgram _shader;

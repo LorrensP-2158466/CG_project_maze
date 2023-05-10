@@ -64,7 +64,7 @@ public:
             else if(name == "texture_specular")
                 number = std::to_string(specularNr++);
 
-            shader.setInt("material." + (name += number), i);
+            shader.setInt("material." + (name + number), i);
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }
         glActiveTexture(GL_TEXTURE0);

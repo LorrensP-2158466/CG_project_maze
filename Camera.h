@@ -51,7 +51,7 @@ public:
     // constructor with vectors
     Camera() : _front(glm::vec3(0.0f, 0.0f, -1.0f))
     {
-        _pos      = glm::vec3(0.0f, 0.0f, 3.f);
+        _pos      = glm::vec3(0.0f, 0.0f, 0.f);
         _world_up = glm::vec3(0.0f, 1.0f, 0.0f);
         updateCameraVectors();
     }

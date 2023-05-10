@@ -8,9 +8,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "Vertex.h"
 #include <iostream>
 #include "ShaderProgram.h"
+#include <common.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -24,7 +24,7 @@ public:
     }
 
     Skybox()
-        : skybox_shader("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.vert", "C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox.frag")
+        : skybox_shader(ROOT_DEF_ + "skybox.vert"_s, ROOT_DEF_ + "skybox.frag"_s)
     {
         sky_vertices = {
                 // positions
