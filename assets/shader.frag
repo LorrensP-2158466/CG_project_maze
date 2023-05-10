@@ -44,7 +44,6 @@ void main()
     vec3 result = vec3(0.0f, 0.0f, 0.0f);
     for (int i = 0; i < NR_POINT_LIGHTS; i++) result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
-
     //FragColor = texture(texture_diffuse1, TexCoords);
     FragColor = vec4(result, 1.0);
 }

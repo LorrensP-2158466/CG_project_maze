@@ -134,12 +134,12 @@ public:
 
     std::vector<std::string> faces =
     {
-        std::string (ROOT_DEF_) + std::string ("skybox/right.jpg"),
-        std::string (ROOT_DEF_) + std::string ("skybox/left.jpg"),
-        std::string (ROOT_DEF_) + std::string ("skybox/top.jpg"),
-        std::string (ROOT_DEF_) + std::string ("skybox/bottom.jpg"),
-        std::string (ROOT_DEF_) + std::string ("skybox/front.jpg"),
-        std::string (ROOT_DEF_) + std::string ("skybox/back.jpg")
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\right.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\left.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\top.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\bottom.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\front.jpg"),
+        std::string ("C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\skybox\\back.jpg")
     };
 
     unsigned int cubemapTexture;
