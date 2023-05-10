@@ -18,9 +18,9 @@
 class Floor {
 public:
     Floor()
+
         : floor("../assets/models/floor_model.obj"){
     };
-
         void draw(ShaderProgram &shader){
             shader.use();
             auto model = glm::translate(glm::mat4(1.F), glm::vec3 {10, -1, 10});
@@ -29,9 +29,12 @@ public:
             floor.Draw(shader);
         }
     Model floor;
-    glm::vec3 pointLightPositions[2] = {
-            glm::vec3(8.0f,  3.0f,  20.0f),
-            glm::vec3(15.0f, 3.0f, 10.0f)
+    glm::vec3 pointLightPositions[5] = {
+        glm::vec3(8.0f,  3.0f,  20.0f),
+        glm::vec3(15.0f, 3.0f, 10.0f),
+        glm::vec3(2.0f, 3.0f, 2.0f),
+        glm::vec3(4.0f, 3.0f, 9.0f),
+        glm::vec3(12.0f, 3.0f, 15.0f)
     };
 };
 

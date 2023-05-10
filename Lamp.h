@@ -83,6 +83,7 @@ public:
     void Draw(const std::array<PointLight, 6> lights) const {
         glBindVertexArray(_vao);
         glUseProgram(_shader.program_id());
+
         for (const auto& l: lights)
         {
             glm::mat4 model = glm::mat4(1.0f);
