@@ -6,8 +6,7 @@ in vec3 Normal;
 in vec2 TexCoords;
 
 
-uniform vec3 viewPos;
-
+in vec3 viewPos;
 uniform sampler2D texture_diffuse1;
 
 struct Material {
@@ -42,10 +41,8 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    
     vec3 result = vec3(0.0f, 0.0f, 0.0f);
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+    for (int i = 0; i < NR_POINT_LIGHTS; i++) result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
     //FragColor = texture(texture_diffuse1, TexCoords);
     FragColor = vec4(result, 1.0);

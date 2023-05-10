@@ -54,7 +54,7 @@ private:
             return;
         }
         // retrieve the directory path of the filepath
-        directory = path.substr(0, path.find_last_of('\\'));
+        directory = path.substr(0, path.find_last_of(PATH_SEP_));
 
         // process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene);
@@ -181,7 +181,7 @@ private:
     static unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma)
     {
         auto filename = std::string(path);
-        filename = directory + '\\' + filename;
+        filename = directory + PATH_SEP_ + filename;
 
         unsigned int textureID;
         glGenTextures(1, &textureID);

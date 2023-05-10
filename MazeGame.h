@@ -20,6 +20,9 @@
 #include "Lamp.h"
 #include "ShaderProgram.h"
 #include "Cursor.h"
+#include "common.h"
+
+
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
@@ -34,11 +37,21 @@ public:
         glfwTerminate();
     }
     MazeGame()
+        : default_program(ROOT_DEF_ + "assets/shader.vert"_s, ROOT_DEF_ + "assets/shader.frag"_s)
+        , instanced_program(ROOT_DEF_ + "assets/shaderInstanced.vert"_s, ROOT_DEF_ + "assets/shader.frag"_s)
+        , light_objects{
+                    PointLight::default_light_with_pos(glm::vec3(8.0f, 3.0f, 20.0f)),
+                    PointLight::default_light_with_pos(glm::vec3(15.0f, 3.0f, 10.0f)),
+                    PointLight::default_light_with_pos(glm::vec3(2.0f, 3.0f, 2.0f)),
+                    PointLight::default_light_with_pos(glm::vec3(4.0f, 3.0f, 9.0f)),
+                    PointLight::default_light_with_pos(glm::vec3(12.0f, 3.0f, 15.0f)),
+            }
     {
+
         load_matrix();
         init_maze_wall();
         init_ubo_mats();
-
+        init_shader_programs();
     }
 
     void init_maze_wall(){
@@ -59,7 +72,7 @@ public:
         maze_walls.set_instances(poss);
     }
     void load_matrix(){
-        std::ifstream maze_text {"C:\\Users\\hidde\\OneDrive\\Documenten\\Hidde Uhasselt\\2e Bach\\Computer Graphics\\CG_project_maze\\maze.txt"};
+        std::ifstream maze_text {ROOT_DEF_ + "maze.txt"_s};
         std::stringstream text;
         text << maze_text.rdbuf();
         auto str_repr = text.str();
@@ -81,19 +94,67 @@ public:
         // init UBO
         glGenBuffers(1, &_ubo_mv_mats);
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
-        glBufferData(GL_UNIFORM_BUFFER, 2* sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, 2* sizeof(glm::mat4) + sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, _ubo_mv_mats, 0, 2 * sizeof(glm::mat4));
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, _ubo_mv_mats, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
         // perspective never changes so we already insert it into the buffer
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &projection[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
-    void Draw() {;
-        lamp.Draw();
-        floor.draw();
-        maze_walls.draw();
+    void init_default_program(){
+        // default
+        default_program.use();
+        default_program.setInt("material.diffuse", 0);
+        default_program.setInt("material.specular", 1);
+        default_program.setFloat("material.shininess", 32.0f);
+        unsigned int uniformBlockIndex = glGetUniformBlockIndex(default_program.program_id(), "PV_mats");
+        glUniformBlockBinding(default_program.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
+        int i = 0;
+        for (const auto& light: light_objects){
+            auto n = std::to_string(i);
+            default_program.setVec3("pointLights["+ n +"].position", light.position);
+            default_program.setVec3("pointLights["+ n +"].ambient", light.ambient);
+            default_program.setVec3("pointLights["+ n +"].diffuse", light.diffuse);
+            default_program.setVec3("pointLights["+n+"].specular", light.specular);
+            default_program.setFloat("pointLights["+n+"].constant", light.constant);
+            default_program.setFloat("pointLights["+n+"].linear", light.linear);
+            default_program.setFloat("pointLights["+n+"].quadratic", light.quadratic);
+            i++;
+        }
+    }
+
+    void init_instanced_program(){
+        instanced_program.use();
+        instanced_program.setInt("material.diffuse", 0);
+        instanced_program.setInt("material.specular", 1);
+        instanced_program.setFloat("material.shininess", 32.0f);
+        auto uniformBlockIndex = glGetUniformBlockIndex(instanced_program.program_id(), "PV_mats");
+        glUniformBlockBinding(instanced_program.program_id(), uniformBlockIndex, 0); // 0 is binding point to the PV_mats
+        int i = 0;
+        for (const auto& light: light_objects){
+            auto n = std::to_string(i);
+            instanced_program.setVec3("pointLights["+n+"].position", light.position);
+            instanced_program.setVec3("pointLights["+n+"].ambient", light.ambient);
+            instanced_program.setVec3("pointLights["+n+"].diffuse", light.diffuse);
+            instanced_program.setVec3("pointLights["+n+"].specular", light.specular);
+            instanced_program.setFloat("pointLights["+n+"].constant", light.constant);
+            instanced_program.setFloat("pointLights["+n+"].linear", light.linear);
+            instanced_program.setFloat("pointLights["+n+"].quadratic", light.quadratic);
+            i++;
+        }
+    }
+
+    void init_shader_programs() {
+        init_default_program();
+        init_instanced_program();
+    }
+
+    void Draw() {
+        lamp.Draw(light_objects);
+        floor.draw(default_program);
+        maze_walls.draw(instanced_program);
         _cursor.draw();
     }
 
@@ -109,15 +170,12 @@ public:
         // we update the view matrix to the UBO
         _camera.update(delta_t);
         auto view = _camera.GetViewMatrix();
+        auto viewPos = _camera._pos;
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0]);
+        glBufferSubData(GL_UNIFORM_BUFFER, 2  * sizeof(glm::mat4), sizeof(glm::vec3), &viewPos[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        // TODO: set camera pos in UBO
-        // glUseProgram(_shader.program_id());
-        // _shader.setVec3("viewPos", _camera._pos);
-
-        maze_walls.update(_camera._pos);
     }
 
     void process_keyboard_input(Camera_Movement direction, float delta_t)
@@ -153,6 +211,9 @@ public:
     Camera _camera;
     Cursor _cursor;
 private:
+    ShaderProgram instanced_program;
+    ShaderProgram default_program;
+    GLuint _ubo_lights;
     GLuint _ubo_mv_mats;
     MazeObject _maze_model;
     MazeWall maze_walls;
@@ -160,13 +221,7 @@ private:
     Skybox skybox;
     Lamp lamp;
     // positions of the point lights
-    glm::vec3 pointLightPositions[5] = {
-        glm::vec3(8.0f,  3.0f,  20.0f),
-        glm::vec3(15.0f, 3.0f, 10.0f),
-        glm::vec3(2.0f, 3.0f, 2.0f),
-        glm::vec3(4.0f, 3.0f, 9.0f),
-        glm::vec3(12.0f, 3.0f, 15.0f)
-    };
+    std::array<PointLight, 5> light_objects;
 };
 
 

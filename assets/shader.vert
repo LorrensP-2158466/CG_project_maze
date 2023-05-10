@@ -6,16 +6,18 @@ layout (location = 2) in vec2 tex;
 out vec3 FragPos;
 out vec3 Normal;
 out vec2 TexCoords;
-
+out vec3 viewPos;
 uniform mat4 model;
 layout (std140) uniform PV_mats
 {
     mat4 projection;
     mat4 view;
+    vec3 cam_pos;
 };
 
 void main()
 {
+    viewPos = cam_pos;
     FragPos = vec3(model * vec4(pos, 1.0));
     Normal = mat3(transpose(inverse(model))) * norm; 
     TexCoords = tex;
