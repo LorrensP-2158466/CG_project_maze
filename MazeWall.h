@@ -17,7 +17,7 @@
 
 class MazeWall {
 public:
-    constexpr static glm::vec3 wall_size {1};
+    constexpr static glm::vec3 wall_size {1, 2, 1};
     constexpr static glm::vec3 dx {0, 0, 1};
     constexpr static glm::vec3 dy {0, 0, 1};
     constexpr static glm::vec3 dz {0, 0, 1};

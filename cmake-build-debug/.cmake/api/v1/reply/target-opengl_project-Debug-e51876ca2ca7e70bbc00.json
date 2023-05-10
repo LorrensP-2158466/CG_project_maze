@@ -204,7 +204,8 @@
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -219,6 +220,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "stb_image.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Obstacle.h",
 			"sourceGroupIndex" : 1
 		}
 	],

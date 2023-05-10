@@ -21,13 +21,14 @@
 #include "ShaderProgram.h"
 #include "Cursor.h"
 #include "common.h"
-
+#include "Obstacle.h"
 
 
 const auto projection = glm::perspective(glm::radians(45.f), 800.0f / 600.0f, 0.1f,1000.0f);
 
 class MazeGame {
     enum Type : char{
+        OBSTACLE,
         FILLED,
         EMPTY
     };
@@ -45,6 +46,7 @@ public:
                     PointLight::default_light_with_pos(glm::vec3(2.0f, 3.0f, 2.0f)),
                     PointLight::default_light_with_pos(glm::vec3(4.0f, 3.0f, 9.0f)),
                     PointLight::default_light_with_pos(glm::vec3(12.0f, 3.0f, 15.0f)),
+                    PointLight::default_light_with_pos(glm::vec3(20.f, 3.f, 20.f))
             }
     {
 
@@ -64,6 +66,9 @@ public:
                 if (object == FILLED){
                     poss.emplace_back(y, 0, x);
                 }
+                else if (object == OBSTACLE){
+                    _obstacles.emplace_back(glm::vec3(y, 0, x));
+                }
                 x++;
             }
             y++;
@@ -82,7 +87,8 @@ public:
             c = *(itr++);
             std::vector<Type> temp;
             do {
-                if (c == '#') temp.emplace_back(FILLED);
+                if      (c == '#') temp.emplace_back(FILLED);
+                else if (c == '.') temp.emplace_back(OBSTACLE);
                 else temp.emplace_back(EMPTY);
             }while((c = *(itr++)) != '\n');
             _maze_model.push_back(temp);
@@ -155,6 +161,10 @@ public:
         lamp.Draw(light_objects);
         floor.draw(default_program);
         maze_walls.draw(instanced_program);
+        for (auto& ob: _obstacles) {
+            if (!ob._destroyed) ob.draw(default_program);
+        }
+
         _cursor.draw();
     }
 
@@ -168,7 +178,12 @@ public:
 
     void update(float delta_t) {
         // we update the view matrix to the UBO
-        _camera.update(delta_t);
+
+        auto temp_camera = _camera;
+        temp_camera.update(delta_t);
+        if (!collisions_with_camera_and_wall(delta_t, temp_camera)){
+            _camera.update(delta_t);
+        }
         auto view = _camera.GetViewMatrix();
         auto viewPos = _camera._pos;
         glBindBuffer(GL_UNIFORM_BUFFER, _ubo_mv_mats);
@@ -176,6 +191,54 @@ public:
         glBufferSubData(GL_UNIFORM_BUFFER, 2  * sizeof(glm::mat4), sizeof(glm::vec3), &viewPos[0]);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+    }
+
+
+
+    void process_mouse_click(float x, float y){
+        // cast a infinite ray
+        constexpr auto length = 2.f;
+        auto ray_origin = _camera._pos; // start
+        auto direction = glm::normalize(_camera._front);
+        debug_print_vec3(ray_origin, "origin");
+        debug_print_vec3(direction,  "direct");
+        // uses rays above
+        auto ray_AABB_checker = [=](auto object_center_pos) {
+            // using cyrus-back clipping
+            glm::vec3 minp = object_center_pos - MazeWall::wall_size / 2.f;
+            glm::vec3 maxp = object_center_pos + MazeWall::wall_size / 2.F;
+            // solve the T values
+            float t1 = (minp.x - ray_origin.x) / direction.x;
+            float t2 = (maxp.x - ray_origin.x) / direction.x;
+            float t3 = (minp.y - ray_origin.y) / direction.y;
+            float t4 = (maxp.y - ray_origin.y) / direction.y;
+            float t5 = (minp.z - ray_origin.z) / direction.z;
+            float t6 = (maxp.z - ray_origin.z) / direction.z;
+
+            float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+            float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+
+            // if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+            if (tmax < 0) {
+                return false;
+            }
+
+            // if tmin > tmax, ray doesn't intersect AABB
+            if (tmin > tmax) {
+                return false;
+            }
+            return glm::length(object_center_pos - ray_origin) < length;};
+        // so we have a ray of length 2
+        // no we have to check if it crosses a object
+        if (std::any_of(maze_walls._positions.begin(), maze_walls._positions.end(),  ray_AABB_checker)) {
+            return;
+        }
+        for (auto& obs: _obstacles){
+            if (ray_AABB_checker(obs._pos) && !obs._destroyed) {
+                obs.destroyed();
+                break;
+            }
+        }
     }
 
     void process_keyboard_input(Camera_Movement direction, float delta_t)
@@ -193,19 +256,18 @@ public:
         // bounding box for camera
         glm::vec3 minc = c_pos - glm::vec3(0.15f);
         glm::vec3 maxc = c_pos + glm::vec3(0.15f);
-        for (const auto& wall_pos: maze_walls._positions) {
-            // bounding box for wall object
+        auto AABB_AABB_checker = [=](auto wall_pos){
             glm::vec3 minp = wall_pos - MazeWall::wall_size / 2.f;
             glm::vec3 maxp = wall_pos + MazeWall::wall_size / 2.F;
-            // compare bounding boxes
-            auto inside = minp.x <= maxc.x && minc.x <= maxp.x &&
-                          minp.y <= maxc.y && minc.y <= maxp.y &&
-                          minp.z <= maxc.z && minc.z <= maxp.z;
-            if (inside) {
-                return true; // yeah, one collision is good enough
-            }
-        }
-        return false;
+            return minp.x <= maxc.x && minc.x <= maxp.x &&
+                   minp.y <= maxc.y && minc.y <= maxp.y &&
+                   minp.z <= maxc.z && minc.z <= maxp.z;
+        };
+        return std::any_of(maze_walls._positions.begin(), maze_walls._positions.end(), AABB_AABB_checker)
+            || std::any_of(_obstacles.begin(), _obstacles.end(), [=](Obstacle obs){
+                return AABB_AABB_checker(obs._pos) && !obs._destroyed;
+            });
+
     }
 
     Camera _camera;
@@ -217,11 +279,12 @@ private:
     GLuint _ubo_mv_mats;
     MazeObject _maze_model;
     MazeWall maze_walls;
+    std::vector<Obstacle> _obstacles;
     Floor floor;
     Skybox skybox;
     Lamp lamp;
     // positions of the point lights
-    std::array<PointLight, 5> light_objects;
+    std::array<PointLight, 6> light_objects;
 };
 
 
